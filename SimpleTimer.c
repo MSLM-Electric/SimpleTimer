@@ -1,6 +1,7 @@
 #include "SimpleTimer.h"
 
-/*This is just simple timer without interrupt callback handler.
+/*This is just simple timer without interrupt callback handler and it works without callback irq.
+Just use IsTimerRinging() request.
 put:
 time - the value that after reaching it IsTimerRinging(&YourTimer) gets true*/
 void LaunchSpecifiedTimer(uint32_t time, Timer_t* Timer)
