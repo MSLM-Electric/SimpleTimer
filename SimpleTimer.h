@@ -19,5 +19,6 @@ typedef uint32_t U32_us;
 
 void LaunchSpecifiedTimer(uint32_t time, Timer_t* Timer);
 void StopSpecifiedTimer(Timer_t* Timer);
+uint8_t IsTimerStarted(Timer_t* Timer);
 uint8_t IsTimerRinging(Timer_t* Timer);
 #endif // !__SIMPLETIMER_H_
