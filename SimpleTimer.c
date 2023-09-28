@@ -55,3 +55,46 @@ uint8_t IsTimerRinging(Timer_t* Timer) {
 	}
 	return 0; //nope!
 }
+
+/*
+Example 1: ... //Measuring one fully programm/algorithm cycle
+MeasuredTime = StopWatch(&stopWatch_UDPrecv); //per cycle
+Example 2: ... //Measuring point to point
+StopWatch(&stopWatch_TimingsBeetwenProcess1and2);                  //1-st point
+... ... ...
+MeasuredTime = StopWatch(&stopWatch_TimingsBeetwenProcess1and2);   //2-nd point
+*/
+uint32_t StopWatch(stopwatch_t *timeMeasure/*, uint8_t measureType*/)
+{
+	//timeMeasure->measureType = measureType;
+	uint32_t timeWatch = 0;
+	uint32_t firstTimeLaunch = timeMeasure->lastTimeFix;
+#ifdef DEBUG_ON_VS	
+		timeWatch = (uint32_t)GetTickCount() - timeMeasure->lastTimeFix;
+		timeMeasure->lastTimeFix = (uint32_t)GetTickCount();
+#else HAL_INCTICK // DEBUG_ON_VS
+		timeWatch = (uint32_t)HAL_GetTick() - timeMeasure->lastTimeFix;
+		timeMeasure->lastTimeFix = (uint32_t)HAL_GetTick();
+#endif
+	if (firstTimeLaunch == 0)
+		return 0;
+	timeMeasure->measuredTime = timeWatch;
+	return timeWatch;
+}
+
+
+uint32_t CyclicStopWatch(stopwatch_t* timeMeasure, uint16_t Ncycle)
+{
+	if (timeMeasure->_tempCycle == 0) {
+		timeMeasure->measureCycle = Ncycle;
+		timeMeasure->_tempCycle = timeMeasure->measureCycle+1;
+		if (Ncycle != 0)
+			timeMeasure->lastTimeFix = (uint32_t)GetTickCount();
+	}
+	if (timeMeasure->_tempCycle > 0)
+		timeMeasure->_tempCycle--;
+	if (timeMeasure->_tempCycle == 0) {
+		return StopWatch(timeMeasure);
+	}
+	return 0;
+}

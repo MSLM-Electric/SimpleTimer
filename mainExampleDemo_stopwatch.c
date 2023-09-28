@@ -19,7 +19,7 @@ int main(void)
 		StopWatch(&simpleMeasure);
 		CyclicStopWatch(&measureTime, 0);
 		AccumulateVar += measureTime.measuredTime;
-		if (CyclicStopWatch(&cyclicMeasure, 3)) {
+		if (CyclicStopWatch(&cyclicMeasure, 3)) {  //when it true, cyclicMeasure.measureTime = 3000ms
 			StopWatch(&testCyclicMeasure);
 			catchPoint = 2;
 			AccumulateVar = 0;

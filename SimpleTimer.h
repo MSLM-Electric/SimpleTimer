@@ -21,4 +21,15 @@ void LaunchSpecifiedTimer(uint32_t time, Timer_t* Timer);
 void StopSpecifiedTimer(Timer_t* Timer);
 uint8_t IsTimerStarted(Timer_t* Timer);
 uint8_t IsTimerRinging(Timer_t* Timer);
+
+typedef struct {
+	uint32_t lastTimeFix;
+	uint32_t measuredTime;
+	uint16_t measureCycle;
+	uint16_t _tempCycle;
+	//uint8_t measureType;
+}stopwatch_t;
+
+uint32_t StopWatch(stopwatch_t* timeMeasure);
+uint32_t CyclicStopWatch(stopwatch_t* timeMeasure, uint16_t Ncycle);
 #endif // !__SIMPLETIMER_H_
