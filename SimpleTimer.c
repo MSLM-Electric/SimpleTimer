@@ -72,6 +72,14 @@ uint32_t StopWatch(stopwatch_t *timeMeasure/*, uint8_t measureType*/)
 #ifdef DEBUG_ON_VS	
 		timeWatch = (uint32_t)GetTickCount() - timeMeasure->lastTimeFix;
 		timeMeasure->lastTimeFix = (uint32_t)GetTickCount();
+		/*----Remarks----	
+		The resolution of the GetTickCount function is limited to the resolution of the system timer, which is typically 
+		in the range of 10 milliseconds to 16 milliseconds. The resolution of the GetTickCount function is not affected 
+		by adjustments made by the GetSystemTimeAdjustment function.
+
+		The elapsed time is stored as a DWORD value. Therefore, the time will wrap around to zero if the system is run 
+		continuously for 49.7 days. To avoid this problem, use the GetTickCount64 function. Otherwise, check for an overflow 
+		condition when comparing times.*/
 #else HAL_INCTICK // DEBUG_ON_VS
 		timeWatch = (uint32_t)HAL_GetTick() - timeMeasure->lastTimeFix;
 		timeMeasure->lastTimeFix = (uint32_t)HAL_GetTick();
@@ -88,8 +96,13 @@ uint32_t CyclicStopWatch(stopwatch_t* timeMeasure, uint16_t Ncycle)
 	if (timeMeasure->_tempCycle == 0) {
 		timeMeasure->measureCycle = Ncycle;
 		timeMeasure->_tempCycle = timeMeasure->measureCycle+1;
-		if (Ncycle != 0)
+		if (Ncycle != 0) {
+#ifdef DEBUG_ON_VS	
 			timeMeasure->lastTimeFix = (uint32_t)GetTickCount();
+#else HAL_INCTICK
+			timeMeasure->lastTimeFix = (uint32_t)HAL_GetTick();
+#endif
+		}
 	}
 	if (timeMeasure->_tempCycle > 0)
 		timeMeasure->_tempCycle--;
