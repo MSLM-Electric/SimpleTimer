@@ -7,6 +7,7 @@
 stopwatch_t measureTime = { 0 }, cyclicMeasure = { 0 }, testCyclicMeasure = { 0 }, simpleMeasure = { 0 };
 uint32_t AccumulateVar = 0;
 uint8_t catchPoint = 0;
+uint32_t justTestVar = 0;
 
 int main(void)
 {
@@ -25,5 +26,7 @@ int main(void)
 			AccumulateVar = 0;
 			StopWatch(&testCyclicMeasure);
 		}
+		justTestVar = t100us((U32_ms)50); //50ms count per 100us  = 500
+		justTestVar = t10us((U32_ms)50);  //50ms count per 10us   = 5000
 	}
 }

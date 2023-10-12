@@ -17,8 +17,13 @@ void LaunchSpecifiedTimer(uint32_t time, Timer_t* Timer)
 			Timer->setVal = time;
 #ifdef DEBUG_ON_VS //DEBUG_ON_VS
 			Timer->launchedTime = (uint32_t)GetTickCount(); //compiler says the GetTickCount64() more safer and hasn't bug!//!
-#else HAL_INCTICK
+#elif defined(HAL_INCTICK)
 			Timer->launchedTime = (uint32_t)HAL_GetTick();
+#elif defined (USER_TICK)
+			/*Write your code here*/
+			//Timer->launchedTime = someExternalTick; //as example
+
+			/*  ending your code  */
 #endif
 		}
 		Timer->Start = 1;
@@ -47,8 +52,12 @@ uint8_t IsTimerRinging(Timer_t* Timer) {
 	if (Timer != NULL) {
 #ifdef DEBUG_ON_VS
 		uint32_t tickTime = (uint32_t)GetTickCount();
-#else HAL_INCTICK // DEBUG_ON_VS
+#elif defined(HAL_INCTICK) // DEBUG_ON_VS
 		uint32_t tickTime = (uint32_t)HAL_GetTick();
+#elif defined (USER_TICK)
+		/*Write your code here*/
+
+		/*  ending your code  */
 #endif
 		if (((tickTime - Timer->launchedTime) > Timer->setVal) * Timer->Start)
 			return 1; //yes, timer is ringing!
@@ -80,9 +89,13 @@ uint32_t StopWatch(stopwatch_t *timeMeasure/*, uint8_t measureType*/)
 		The elapsed time is stored as a DWORD value. Therefore, the time will wrap around to zero if the system is run 
 		continuously for 49.7 days. To avoid this problem, use the GetTickCount64 function. Otherwise, check for an overflow 
 		condition when comparing times.*/
-#else HAL_INCTICK // DEBUG_ON_VS
+#elif defined(HAL_INCTICK) // DEBUG_ON_VS
 		timeWatch = (uint32_t)HAL_GetTick() - timeMeasure->lastTimeFix;
 		timeMeasure->lastTimeFix = (uint32_t)HAL_GetTick();
+#elif defined (USER_TICK)
+		/*Write your code here*/
+		
+		/*  ending your code  */
 #endif
 	if (firstTimeLaunch == 0)
 		return 0;
@@ -95,12 +108,16 @@ uint32_t CyclicStopWatch(stopwatch_t* timeMeasure, uint16_t Ncycle)
 {
 	if (timeMeasure->_tempCycle == 0) {
 		timeMeasure->measureCycle = Ncycle;
-		timeMeasure->_tempCycle = timeMeasure->measureCycle+1;
+		timeMeasure->_tempCycle = timeMeasure->measureCycle + 1;
 		if (Ncycle != 0) {
 #ifdef DEBUG_ON_VS	
 			timeMeasure->lastTimeFix = (uint32_t)GetTickCount();
-#else HAL_INCTICK
+#elif defined(HAL_INCTICK)
 			timeMeasure->lastTimeFix = (uint32_t)HAL_GetTick();
+#elif defined (USER_TICK)
+			/*Write your code here*/
+
+			/*  ending your code  */
 #endif
 		}
 	}

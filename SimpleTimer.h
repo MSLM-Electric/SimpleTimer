@@ -3,10 +3,16 @@
 
 #include <stdint.h>
 
+//#define USER_TICK
 #define DEBUG_ON_VS
 #ifndef DEBUG_ON_VS
+#ifndef USER_TICK
 #define HAL_INCTICK
+#endif // !USER_TICK
 #endif // !DEBUG
+
+#define t100us(x) x*10
+#define t10us(x) x*100
 
 typedef struct {
 	uint32_t setVal;
