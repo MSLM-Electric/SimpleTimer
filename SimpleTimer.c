@@ -2,7 +2,9 @@
 #ifdef DEBUG_ON_VS
 #include <Windows.h>
 #elif defined (HAL_INCTICK)
-#include "hal.h" //or write proper path & name
+#include "hal.h" //for example "stm32f1xx_hal.h" //or write proper path & name
+#elif defined (USER_TICK)
+uint32_t someExternalTick;
 #endif // DEBUG
 
 /*This is just simple timer without interrupt callback handler and it works without interrupt.
@@ -21,7 +23,7 @@ void LaunchSpecifiedTimer(uint32_t time, Timer_t* Timer)
 			Timer->launchedTime = (uint32_t)HAL_GetTick();
 #elif defined (USER_TICK)
 			/*Write your code here*/
-			//Timer->launchedTime = someExternalTick; //as example
+			Timer->launchedTime = someExternalTick; //as example
 
 			/*  ending your code  */
 #endif
@@ -56,7 +58,7 @@ uint8_t IsTimerRinging(Timer_t* Timer) {
 		uint32_t tickTime = (uint32_t)HAL_GetTick();
 #elif defined (USER_TICK)
 		/*Write your code here*/
-
+		uint32_t tickTime = someExternalTick;
 		/*  ending your code  */
 #endif
 		if (((tickTime - Timer->launchedTime) > Timer->setVal) * Timer->Start)
@@ -94,7 +96,8 @@ uint32_t StopWatch(stopwatch_t *timeMeasure/*, uint8_t measureType*/)
 		timeMeasure->lastTimeFix = (uint32_t)HAL_GetTick();
 #elif defined (USER_TICK)
 		/*Write your code here*/
-		
+		timeWatch = someExternalTick - timeMeasure->lastTimeFix;
+		timeMeasure->lastTimeFix = someExternalTick;
 		/*  ending your code  */
 #endif
 	if (firstTimeLaunch == 0)
@@ -116,7 +119,7 @@ uint32_t CyclicStopWatch(stopwatch_t* timeMeasure, uint16_t Ncycle)
 			timeMeasure->lastTimeFix = (uint32_t)HAL_GetTick();
 #elif defined (USER_TICK)
 			/*Write your code here*/
-
+			timeMeasure->lastTimeFix = someExternalTick;
 			/*  ending your code  */
 #endif
 		}
