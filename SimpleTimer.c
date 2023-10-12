@@ -5,6 +5,16 @@
 #include "hal.h" //for example "stm32f1xx_hal.h" //or write proper path & name
 #elif defined (USER_TICK)
 uint32_t someExternalTick;
+/*someExternalTick should be incremented on your specific
+Timer interrupt handler partcode. For example: 
+void TimerCallback(void *tim)
+{
+	if(tim == TIM5){
+		someExternalTick++;
+		...other processes
+	}
+}
+*/
 #endif // DEBUG
 
 /*This is just simple timer without interrupt callback handler and it works without interrupt.

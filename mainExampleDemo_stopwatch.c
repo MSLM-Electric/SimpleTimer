@@ -26,7 +26,7 @@ int main(void)
 			AccumulateVar = 0;
 			StopWatch(&testCyclicMeasure);
 		}
-		justTestVar = Every1msBy100us((U32_ms)50); //50ms count per 100us  = 500 //ms_x100us
-		justTestVar = Every1msBy10us((U32_ms)50);  //50ms count per 10us   = 5000 //ms_x10us
+		justTestVar = ms_x100us((U32_ms)50); //50ms count per 100us  = 500
+		justTestVar = ms_x10us((U32_ms)50);  //50ms count per 10us   = 5000
 	}
 }
