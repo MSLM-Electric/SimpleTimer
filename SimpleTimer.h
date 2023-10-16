@@ -39,6 +39,33 @@ typedef struct {
 	//uint8_t measureType;
 }stopwatch_t;
 
+typedef void* (tickptr_fn)();
+
+typedef struct {
+	uint32_t setVal;
+	uint32_t launchedTime;
+	uint8_t Start;
+	tickptr_fn* ptrToTick;
+}SpecTimer_t;
+
+typedef struct {
+	uint32_t lastTimeFix;
+	uint32_t measuredTime;
+	uint16_t measureCycle;
+	uint16_t _tempCycle;
+	//uint8_t measureType;
+	tickptr_fn* ptrToTick;
+}specStopwatch_t;
+
 uint32_t StopWatch(stopwatch_t* timeMeasure);
 uint32_t CyclicStopWatch(stopwatch_t* timeMeasure, uint16_t Ncycle);
+uint32_t StopWatchSpec(specStopwatch_t* timeMeasure);
+
+uint32_t CyclicStopWatchSpec(specStopwatch_t* timeMeasure, uint16_t Ncycle);
+
+void LaunchTimerSpec(uint32_t time, SpecTimer_t* Timer);
+void StopTimerSpec(SpecTimer_t* Timer);
+uint8_t IsTimerSpecStarted(SpecTimer_t* Timer);
+uint8_t IsTimerSpecRinging(SpecTimer_t* Timer);
+
 #endif // !__SIMPLETIMER_H_
