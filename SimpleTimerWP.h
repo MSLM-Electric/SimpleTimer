@@ -2,15 +2,16 @@
 #define __SIMPLETIMERWP_H_  //Protection from the headers are getting included multiple time
 
 #include <stdint.h>
+#include <string.h> //only for memset
 
 #ifndef __SIMPLETIMER_H_
 #define ms_x100us(x) x*10 //1ms is  10 x 100microseconds
 #define ms_x10us(x) x*100 //2ms is  200 x 10microseconds
 typedef uint32_t U32_ms;
 typedef uint32_t U32_us;
-#endif
 
 typedef void* (tickptr_fn)();
+#endif
 
 typedef struct {
 	uint32_t setVal;

@@ -46,6 +46,9 @@ int main(void)
 			StopTimerSpec(&Timer1);
 			LaunchTimerSpec(15, &Timer1);
 		}
+#include "SimpleTimerWP.h"
+		stopwatchwp_t timeM;
+		InitStopWatchWP(&timeM, (tickptr_fn*)GetTickCount);
 	}
 }
 

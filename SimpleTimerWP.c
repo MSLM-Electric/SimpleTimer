@@ -58,7 +58,7 @@ InitTimerWP(&MyTimer1, (tickptr_fn*)HAL_GetTick); //for MyTimer1 use the HAL_Get
 */
 void InitStopWatchWP(stopwatchwp_t* timeMeasure, tickptr_fn* SpecifyTickFunction)
 {
-	memset(timeMeasure, 0, sizeof(timeMeasure));
+	memset(timeMeasure, 0, sizeof(stopwatchwp_t));
 	timeMeasure->ptrToTick = SpecifyTickFunction;
 }
 
