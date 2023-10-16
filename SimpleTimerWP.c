@@ -44,8 +44,8 @@ MyTimer1.ptrToTick = (tickptr_fn*)GetTickCount;
 MyTimer2.ptrToTick = (tickptr_fn*)HAL_GetTick;
 microsecondT.ptrToTick = (tickptr_fn*)usTick;
 -->
-And the main functions of this library will fucntioning
-refering to the fucntions mentioned on above.
+And the main functions of this library will fucntionate
+refering to the fucntions mentioned above.
 
 uint32_t usTick(void)
 {
@@ -94,7 +94,7 @@ uint32_t CyclicStopWatchWP(stopwatchwp_t* timeMeasure, uint16_t Ncycle)
 		timeMeasure->measureCycle = Ncycle;
 		timeMeasure->_tempCycle = timeMeasure->measureCycle + 1;
 		if (Ncycle != 0) {	
-			timeMeasure->lastTimeFix = (uint32_t)timeMeasure->ptrToTick();
+            timeMeasure->lastTimeFix = (uint32_t)(timeMeasure->ptrToTick());
 		}
 	}
 	if (timeMeasure->_tempCycle > 0)
@@ -105,15 +105,20 @@ uint32_t CyclicStopWatchWP(stopwatchwp_t* timeMeasure, uint16_t Ncycle)
 	return 0;
 }
 
+/*This is just simple timer without interrupt callback handler and it works without interrupt.
+Just use IsTimerWPRinging() request. But before you have to set the .ptrToTick to the tick function reference.
+To do it call the InitTimerWP(&MyTimer, (tickptr_fn *)xTickGetCountForExample);
+put:
+time - the value that after reaching it IsTimerWPRinging(&MyTimer) gets true*/
 void LaunchTimerWP(uint32_t time, Timerwp_t* Timer)
 {
 	if (Timer->ptrToTick == NULL)
-		return 0;
+		return;
 	if (Timer != NULL) {
 		if (Timer->Start == 0)
 		{
 			Timer->setVal = time;
-			Timer->launchedTime = (uint32_t)Timer->ptrToTick(); 
+            Timer->launchedTime = (uint32_t)(Timer->ptrToTick());
 		}
 		Timer->Start = 1;
 	}
@@ -123,7 +128,7 @@ void LaunchTimerWP(uint32_t time, Timerwp_t* Timer)
 void StopTimerWP(Timerwp_t* Timer) //or RestartTimer
 {
 	if (Timer->ptrToTick == NULL)
-		return 0;
+		return;
 	if (Timer != NULL) {
 		Timer->setVal = 0;
 		Timer->launchedTime = 0;
@@ -145,7 +150,7 @@ uint8_t IsTimerWPRinging(Timerwp_t* Timer) {
 	if (Timer->ptrToTick == NULL)
 		return 0;
 	if (Timer != NULL) {
-		uint32_t tickTime = (uint32_t)Timer->ptrToTick();
+        uint32_t tickTime = (uint32_t)(Timer->ptrToTick());
 		if (((tickTime - Timer->launchedTime) > Timer->setVal) * Timer->Start)
 			return 1; //yes, timer is ringing!
 	}
