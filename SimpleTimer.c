@@ -46,7 +46,7 @@ Timer interrupt handler partcode. For example:
 void TimerCallback(void *tim)
 {
 	if(tim == TIM5){
-		someExternalTick++;
+		someExternalTick++;  // or just set Timer config as a counter.
 		...other processes
 	}
 }
@@ -54,7 +54,8 @@ void TimerCallback(void *tim)
 #endif // DEBUG
 
 /*This is just simple timer without interrupt callback handler and it works without interrupt.
-Just use IsTimerRinging() request.
+For do that you can set mcu timer config as a counter (even without interrupt) and then just 
+use IsTimerRinging() request.
 put:
 time - the value that after reaching it IsTimerRinging(&YourTimer) gets true*/
 void LaunchSpecifiedTimer(uint32_t time, Timer_t* Timer)
@@ -69,7 +70,7 @@ void LaunchSpecifiedTimer(uint32_t time, Timer_t* Timer)
 			Timer->launchedTime = (uint32_t)HAL_GetTick();
 #elif defined (USER_TICK)
 			/*Write your code here*/
-			Timer->launchedTime = someExternalTick; //as example
+			Timer->launchedTime = someExternalTick; //as example. Or if you set the timer config as timer, put here the timer count register value.
 
 			/*  ending your code  */
 #endif
