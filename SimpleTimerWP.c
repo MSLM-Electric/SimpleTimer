@@ -93,8 +93,8 @@ uint32_t CyclicStopWatchWP(stopwatchwp_t* timeMeasure, uint16_t Ncycle)
 	if (timeMeasure->_tempCycle == 0) {
 		timeMeasure->measureCycle = Ncycle;
 		timeMeasure->_tempCycle = timeMeasure->measureCycle + 1;
-		if (Ncycle != 0) {	
-            timeMeasure->lastTimeFix = (uint32_t)(timeMeasure->ptrToTick());
+		if (Ncycle != 0) {
+			timeMeasure->lastTimeFix = (uint32_t)(timeMeasure->ptrToTick());
 		}
 	}
 	if (timeMeasure->_tempCycle > 0)
