@@ -39,5 +39,6 @@ void LaunchTimerWP(uint32_t time, Timerwp_t* Timer);
 void StopTimerWP(Timerwp_t* Timer);
 uint8_t IsTimerWPStarted(Timerwp_t* Timer);
 uint8_t IsTimerWPRinging(Timerwp_t* Timer);
+int RestartTimerWP(Timerwp_t* Timer);
 
 #endif // !__SIMPLETIMER_H_

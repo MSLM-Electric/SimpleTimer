@@ -156,3 +156,14 @@ uint8_t IsTimerWPRinging(Timerwp_t* Timer) {
 	}
 	return 0; //nope!
 }
+
+uint8_t RestartTimerWP(Timerwp_t* Timer)
+{
+	if ((Timer->ptrToTick == NULL) || (Timer == NULL))
+		return 255;
+	if (Timer->setVal < 0)
+		return 254;
+	Timer->launchedTime = (uint32_t)(Timer->ptrToTick());
+	Timer->Start = 1;
+	return 0;
+}
