@@ -56,6 +56,10 @@ or just:
 InitStopWatchWP(&microsecondT, (tickptr_fn*)usTick);
 InitTimerWP(&MyTimer1, (tickptr_fn*)HAL_GetTick); //for MyTimer1 use the HAL_GetTick() fucntion;
 */
+
+/*static*/ Timerwp_t* RegisteredTimers[MAX_REGISTER_NUM];
+/*static*/ uint8_t NRegister = 0;
+
 void InitStopWatchWP(stopwatchwp_t* timeMeasure, tickptr_fn* SpecifyTickFunction)
 {
 	memset(timeMeasure, 0, sizeof(stopwatchwp_t));
@@ -165,5 +169,63 @@ uint8_t RestartTimerWP(Timerwp_t* Timer)
 		return 254;
 	Timer->launchedTime = (uint32_t)(Timer->ptrToTick());
 	Timer->Start = 1;
+	return 0;
+}
+
+uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, enum timerType_enum timType, tickptr_fn *SpecifyTickFunc)
+{
+	if (NRegister) {
+		if (NRegister < MAX_REGISTER_NUM)
+			Timer->next = (Timerwp_t *)RegisteredTimers[NRegister - 1];
+		else
+			return 240;
+	}
+	Timer->RegisteredCallback = ThisTimerCallback;
+	RegisteredTimers[NRegister] = Timer;
+	NRegister++;
+	Timer->TimType = timType;
+	Timer->ptrToTick = SpecifyTickFunc;
+	return 0;
+}
+
+//state: Not tested yet!
+uint8_t UnRegisterTimerCallback(Timerwp_t* Timer)
+{
+	uint8_t k = 0;
+	for (uint8_t i = 0; i < NRegister; i++) {
+		if (Timer == RegisteredTimers[i]) {
+			Timer->RegisteredCallback = NULL;
+			Timer->next = NULL;
+			StopTimerWP(Timer);
+			RegisteredTimers[i] = NULL;
+			k = NRegister; //looks unreadable, but is only for
+			for (uint8_t n = i + 1; n < NRegister; n++) {
+				RegisteredTimers[n - 1] = RegisteredTimers[n];
+				//RegisteredTimers[n]->next 
+			}
+			break;
+		}else
+			k++;
+	}
+	if (k < (NRegister - 1))
+		return 241; //This Timer not registered!
+	return 0;
+}
+
+uint8_t IsTimerWPRinging_CallFromISR(Timerwp_t* Timer)
+{
+	if (Timer->RegisteredCallback != NULL)
+	{
+		for (Timerwp_t* timPtr = Timer; timPtr != NULL; timPtr = timPtr->next) {
+			if (IsTimerWPRinging(timPtr)) {
+				timPtr->RegisteredCallback(timPtr->arg);
+				if (timPtr->TimType == PERIODIC_TIMER)
+					RestartTimerWP(timPtr);
+				else {
+					//StopTimerWP(Timer);
+					timPtr->Start = 0;}
+			}
+		}
+	}
 	return 0;
 }

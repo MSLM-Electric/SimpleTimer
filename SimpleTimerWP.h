@@ -5,20 +5,35 @@
 #include <string.h> //only for memset
 
 #ifndef __SIMPLETIMER_H_
+#define DEBUG_ON_VS
 #define ms_x100us(x) x*10 //1ms is  10 x 100microseconds
 #define ms_x10us(x) x*100 //2ms is  200 x 10microseconds
 typedef uint32_t U32_ms;
 typedef uint32_t U32_us;
 
 typedef void* (tickptr_fn)();
+typedef void* (timerwpcallback_fn)(void *arg);
 #endif
+
+#define MAX_REGISTER_NUM 10
+
+enum {
+	ONE_SHOT_TIMER,
+	PERIODIC_TIMER
+}timerType_enum;
 
 typedef struct {
 	uint32_t setVal;
 	uint32_t launchedTime;
 	uint8_t Start;
 	tickptr_fn* ptrToTick;
+	timerwpcallback_fn* RegisteredCallback;
+	void* arg;
+	void *next;
+	enum timerType_enum TimType;
 }Timerwp_t;
+
+Timerwp_t* RegisteredTimers[MAX_REGISTER_NUM];
 
 typedef struct {
 	uint32_t lastTimeFix;
@@ -41,4 +56,7 @@ uint8_t IsTimerWPStarted(Timerwp_t* Timer);
 uint8_t IsTimerWPRinging(Timerwp_t* Timer);
 uint8_t RestartTimerWP(Timerwp_t* Timer);
 
+uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, enum timerType_enum timType, tickptr_fn* SpecifyTickFunc);
+uint8_t UnRegisterTimerCallback(Timerwp_t* Timer);
+uint8_t IsTimerWPRinging_CallFromISR(Timerwp_t* Timer);
 #endif // !__SIMPLETIMER_H_

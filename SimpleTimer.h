@@ -40,6 +40,7 @@ typedef struct {
 }stopwatch_t;
 
 typedef void* (tickptr_fn)();
+typedef void* (timerwpcallback_fn)(void* arg);
 
 typedef struct {
 	uint32_t setVal;
