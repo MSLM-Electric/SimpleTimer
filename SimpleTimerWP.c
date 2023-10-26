@@ -188,7 +188,7 @@ uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCal
 	return 0;
 }
 
-//state: Not tested yet!
+//state: Tested!
 uint8_t UnRegisterTimerCallback(Timerwp_t* Timer)
 {
 	uint8_t k = 0;
@@ -198,17 +198,25 @@ uint8_t UnRegisterTimerCallback(Timerwp_t* Timer)
 			Timer->next = NULL;
 			StopTimerWP(Timer);
 			RegisteredTimers[i] = NULL;
-			k = NRegister; //looks unreadable, but is only for
+			k = NRegister; //looks unreadable, but is only for ...
+			uint8_t doOnce = 1;
 			for (uint8_t n = i + 1; n < NRegister; n++) {
 				RegisteredTimers[n - 1] = RegisteredTimers[n];
-				//RegisteredTimers[n]->next 
+				if (doOnce && (i > 0)) {
+					RegisteredTimers[n]->next = RegisteredTimers[i - 1];
+					doOnce = 0;}
+				else
+					RegisteredTimers[n] = NULL;
+				if (i == 0)
+					RegisteredTimers[i]->next = NULL;  //delete the nextptr on 0-th array or 1st member on regtimer
 			}
+			NRegister--;
 			break;
 		}else
 			k++;
 	}
-	if (k < (NRegister - 1))
-		return 241; //This Timer not registered!
+	if (k <= NRegister)
+		return 241; //This Timer not registered, not found!
 	return 0;
 }
 
