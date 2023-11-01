@@ -122,7 +122,7 @@ void LaunchTimerWP(uint32_t time, Timerwp_t* Timer)
 		if (Timer->Start == 0)
 		{
 			Timer->setVal = time;
-            Timer->launchedTime = (uint32_t)(Timer->ptrToTick());
+			Timer->launchedTime = (uint32_t)(Timer->ptrToTick());
 		}
 		Timer->Start = 1;
 	}
@@ -172,6 +172,7 @@ uint8_t RestartTimerWP(Timerwp_t* Timer)
 	return 0;
 }
 
+#ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
 uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, enum timerType_enum timType, tickptr_fn *SpecifyTickFunc)
 {
 	if (NRegister) {
@@ -220,7 +221,7 @@ uint8_t UnRegisterTimerCallback(Timerwp_t* Timer)
 	return 0;
 }
 
-uint8_t IsTimerWPRinging_CallFromISR(Timerwp_t* Timer)
+uint8_t RegisteredTimersCallbackHandle(Timerwp_t* Timer)
 {
 	if (Timer->RegisteredCallback != NULL)
 	{
@@ -237,3 +238,4 @@ uint8_t IsTimerWPRinging_CallFromISR(Timerwp_t* Timer)
 	}
 	return 0;
 }
+#endif // USE_REGISTERING_TIMERS_WITH_CALLBACK

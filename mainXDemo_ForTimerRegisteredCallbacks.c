@@ -16,7 +16,7 @@ extern Timerwp_t* RegisteredTimers[];
 extern uint8_t NRegister;
 static void TimersCallback(void* arg);
 static void AnotherCallback(void* arg);
-void InterruptHardwareTimerImmit(void);
+void InterruptHardwareTimerImmitation(void);
 static uint32_t simulateTick(void);
 
 int main(void)
@@ -44,7 +44,7 @@ int main(void)
 	{		
 		if (IsTimerWPRinging(&ms_Delay)) {
 			RestartTimerWP(&ms_Delay);
-			InterruptHardwareTimerImmit();
+			InterruptHardwareTimerImmitation();
 		}
 		if (IsTimerWPRinging(&Delay10s)) {
 			StopTimerWP(&Delay10s);
@@ -61,9 +61,9 @@ int main(void)
 }
 
 
-void InterruptHardwareTimerImmit(void)
+void InterruptHardwareTimerImmitation(void)
 {
-	IsTimerWPRinging_CallFromISR(RegisteredTimers[NRegister-1]);
+	RegisteredTimersCallbackHandle(RegisteredTimers[NRegister-1]);
 	return;
 }
 

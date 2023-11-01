@@ -6,6 +6,8 @@
 
 #ifndef __SIMPLETIMER_H_
 #define DEBUG_ON_VS
+#define USE_REGISTERING_TIMERS_WITH_CALLBACK
+
 #define ms_x100us(x) x*10 //1ms is  10 x 100microseconds
 #define ms_x10us(x) x*100 //2ms is  200 x 10microseconds
 typedef uint32_t U32_ms;
@@ -58,5 +60,5 @@ uint8_t RestartTimerWP(Timerwp_t* Timer);
 
 uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, enum timerType_enum timType, tickptr_fn* SpecifyTickFunc);
 uint8_t UnRegisterTimerCallback(Timerwp_t* Timer);
-uint8_t IsTimerWPRinging_CallFromISR(Timerwp_t* Timer);
+uint8_t RegisteredTimersCallbackHandle(Timerwp_t* Timer);
 #endif // !__SIMPLETIMER_H_
