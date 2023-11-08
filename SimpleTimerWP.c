@@ -186,6 +186,8 @@ uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCal
 	NRegister++;
 	Timer->TimType = timType;
 	Timer->ptrToTick = SpecifyTickFunc;
+	if (Timer->arg == NULL)
+		Timer->arg = Timer;
 	return 0;
 }
 

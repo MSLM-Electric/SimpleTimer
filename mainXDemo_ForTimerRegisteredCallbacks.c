@@ -10,12 +10,15 @@ Timer2s = { 0 },
 Timer1s = { 0 }, 
 Timer5sOneS = { 0 },
 Timer10sOne = {0},
+Timer15s = {0},
 ms_Delay = { 0 }, Delay10s = { 0 };
+stopwatchwp_t Test15s = { 0 };
 uint8_t testVarcmd = 0;
 extern Timerwp_t* RegisteredTimers[];
 extern uint8_t NRegister;
 static void TimersCallback(void* arg);
 static void AnotherCallback(void* arg);
+static void ThirdCallback(void* arg);
 void InterruptHardwareTimerImmitation(void);
 static uint32_t simulateTick(void);
 
@@ -26,16 +29,15 @@ int main(void)
 	RegisterTimerCallback(&Timer3s, (timerwpcallback_fn*)TimersCallback, PERIODIC_TIMER, (tickptr_fn*)GetTickCount);
 	RegisterTimerCallback(&Timer5sOneS, (timerwpcallback_fn*)TimersCallback, ONE_SHOT_TIMER, (tickptr_fn*)GetTickCount);
 	RegisterTimerCallback(&Timer10sOne, (timerwpcallback_fn*)AnotherCallback, ONE_SHOT_TIMER, (tickptr_fn*)GetTickCount);
-	Timer1s.arg = &Timer1s;
-	Timer2s.arg = &Timer2s;
-	Timer3s.arg = &Timer3s;
-	Timer5sOneS.arg = &Timer5sOneS;
-	Timer10sOne.arg = &Timer10sOne;
+	RegisterTimerCallback(&Timer15s, (timerwpcallback_fn*)ThirdCallback, PERIODIC_TIMER, (tickptr_fn*)GetTickCount);
+	Timer15s.arg = &testVarcmd;
+	Test15s.ptrToTick = (tickptr_fn*)GetTickCount;
 	LaunchTimerWP(1000, &Timer1s);
 	LaunchTimerWP(2000, &Timer2s);
 	LaunchTimerWP(3000, &Timer3s);
 	LaunchTimerWP(5000, &Timer5sOneS);	
 	LaunchTimerWP((U32_ms)10000, &Timer10sOne);
+	LaunchTimerWP(15000, &Timer15s);
 	InitTimerWP(&ms_Delay, (tickptr_fn*)GetTickCount);  //its just simple timer/delay. It func. is just do some delay operation not precisiously
 	InitTimerWP(&Delay10s, (tickptr_fn*)GetTickCount);
 	LaunchTimerWP((U32_ms)10, &ms_Delay);
@@ -77,8 +79,22 @@ static void TimersCallback(void* arg)
 static void AnotherCallback(void* arg)
 {
 	Timerwp_t* timPtr = arg;
-	printf("%u ms left! HAHAHA!\n", timPtr->setVal);
+	if(timPtr->setVal == 10000)
+		printf("10s left! HAHAHA!\n", timPtr->setVal);
+	else
+		printf("%u ms left! It's not 10s!\n", timPtr->setVal);
 	return;
+}
+
+static void ThirdCallback(void* arg)
+{
+	uint8_t data = ((uint8_t *)arg)[0];
+	if (data)
+		printf("after 15s, var is TRUE!\n");
+	else
+		printf("after 15s, var is FALSE!\n");
+	if(StopWatchWP(&Test15s))
+		printf("Measured time is %u ms!\n", Test15s.measuredTime);
 }
 
 static uint32_t globTick = 0;
