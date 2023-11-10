@@ -61,4 +61,5 @@ uint8_t RestartTimerWP(Timerwp_t* Timer);
 uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, enum timerType_enum timType, tickptr_fn* SpecifyTickFunc);
 uint8_t UnRegisterTimerCallback(Timerwp_t* Timer);
 uint8_t RegisteredTimersCallbackHandle(Timerwp_t* Timer);
+uint8_t getRegistersMaxIndex(void);
 #endif // !__SIMPLETIMER_H_

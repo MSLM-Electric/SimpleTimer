@@ -34,7 +34,7 @@
 	Author: github.com/MSLM-Electric/
 */
 
-#include "SimpleTimerWP.h"  //WP means "WITH POINTER" i.e Simple Timer with pointer. 
+#include "SimpleTimerWP.h"  //WP means "WITH POINTER". 
 /*you can set to it pointer the address of your project TickValue getting function.
 For example: -->
 Timerwp_t MyTimer1;
@@ -58,7 +58,7 @@ InitTimerWP(&MyTimer1, (tickptr_fn*)HAL_GetTick); //for MyTimer1 use the HAL_Get
 */
 
 /*static*/ Timerwp_t* RegisteredTimers[MAX_REGISTER_NUM];
-/*static*/ uint8_t NRegister = 0;
+static uint8_t NRegister = 0;
 
 void InitStopWatchWP(stopwatchwp_t* timeMeasure, tickptr_fn* SpecifyTickFunction)
 {
@@ -225,19 +225,30 @@ uint8_t UnRegisterTimerCallback(Timerwp_t* Timer)
 
 uint8_t RegisteredTimersCallbackHandle(Timerwp_t* Timer)
 {
-	if (Timer->RegisteredCallback != NULL)
-	{
-		for (Timerwp_t* timPtr = Timer; timPtr != NULL; timPtr = timPtr->next) {
-			if (IsTimerWPRinging(timPtr)) {
-				timPtr->RegisteredCallback(timPtr->arg);
-				if (timPtr->TimType == PERIODIC_TIMER)
-					RestartTimerWP(timPtr);
-				else {
-					//StopTimerWP(Timer);
-					timPtr->Start = 0;}
+	if (Timer != NULL) {
+		if (Timer->RegisteredCallback != NULL)
+		{
+			for (Timerwp_t* timPtr = Timer; timPtr != NULL; timPtr = timPtr->next) {
+				if (IsTimerWPRinging(timPtr)) {
+					timPtr->RegisteredCallback(timPtr->arg);
+					if (timPtr->TimType == PERIODIC_TIMER)
+						RestartTimerWP(timPtr);
+					else {
+						//StopTimerWP(Timer);
+						timPtr->Start = 0;
+					}
+				}
 			}
 		}
 	}
 	return 0;
+}
+
+uint8_t getRegistersMaxIndex(void)
+{
+	if (NRegister > 0) {
+		return NRegister - 1;
+	}
+	return 255; //bad res!
 }
 #endif // USE_REGISTERING_TIMERS_WITH_CALLBACK

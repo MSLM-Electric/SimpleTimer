@@ -15,12 +15,12 @@ ms_Delay = { 0 }, Delay10s = { 0 };
 stopwatchwp_t Test15s = { 0 };
 uint8_t testVarcmd = 0;
 extern Timerwp_t* RegisteredTimers[];
-extern uint8_t NRegister;
 static void TimersCallback(void* arg);
 static void AnotherCallback(void* arg);
 static void ThirdCallback(void* arg);
 void InterruptHardwareTimerImmitation(void);
-static uint32_t simulateTick(void);
+static void simulateTick(void);
+static uint32_t getSimulatedTick(void);
 
 int main(void)
 {
@@ -40,7 +40,7 @@ int main(void)
 	LaunchTimerWP(15000, &Timer15s);
 	InitTimerWP(&ms_Delay, (tickptr_fn*)GetTickCount);  //its just simple timer/delay. It func. is just do some delay operation not precisiously
 	InitTimerWP(&Delay10s, (tickptr_fn*)GetTickCount);
-	LaunchTimerWP((U32_ms)10, &ms_Delay);
+	LaunchTimerWP((U32_ms)10, &ms_Delay); //10ms delay
 	LaunchTimerWP((U32_ms)10000, &Delay10s);
 	while (1)
 	{		
@@ -65,7 +65,7 @@ int main(void)
 
 void InterruptHardwareTimerImmitation(void)
 {
-	RegisteredTimersCallbackHandle(RegisteredTimers[NRegister-1]);
+	RegisteredTimersCallbackHandle(RegisteredTimers[getRegistersMaxIndex()]);
 	return;
 }
 
@@ -80,7 +80,7 @@ static void AnotherCallback(void* arg)
 {
 	Timerwp_t* timPtr = arg;
 	if(timPtr->setVal == 10000)
-		printf("10s left! HAHAHA!\n", timPtr->setVal);
+		printf("10s left! HAHAHA!\n");
 	else
 		printf("%u ms left! It's not 10s!\n", timPtr->setVal);
 	return;
@@ -94,12 +94,22 @@ static void ThirdCallback(void* arg)
 	else
 		printf("after 15s, var is FALSE!\n");
 	if(StopWatchWP(&Test15s))
-		printf("Measured time is %u ms!\n", Test15s.measuredTime);
+		printf("Measured time is %u ms!\n", Test15s.measuredTime);  //measuredTime = 15015...15016 ms
 }
 
 static uint32_t globTick = 0;
-static uint32_t simulateTick(void)
+//Some Example:
+static void simulateTick(void)
 {
 	globTick++;
+	return;
+	/*As example use this func as a reference tick to your specific timer:*/
+	/*
+	Timerwp_t MySimulatorTimer = {0};
+	MySimulatorTimer.ptrToTick = (tickptr_fn*)simulateTick;*/
+}
+
+static uint32_t getSimulatedTick(void)
+{
 	return globTick;
 }
