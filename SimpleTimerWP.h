@@ -14,10 +14,12 @@ typedef uint32_t U32_ms;
 typedef uint32_t U32_us;
 
 typedef void* (tickptr_fn)();
-typedef void* (timerwpcallback_fn)(void *arg);
 #endif
 
+#ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
+typedef void* (timerwpcallback_fn)(void* arg);
 #define MAX_REGISTER_NUM 10
+#endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
 
 enum {
 	ONE_SHOT_TIMER,
@@ -29,13 +31,17 @@ typedef struct {
 	uint32_t launchedTime;
 	uint8_t Start;
 	tickptr_fn* ptrToTick;
+	enum timerType_enum TimType;
+#ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
 	timerwpcallback_fn* RegisteredCallback;
 	void* arg;
-	void *next;
-	enum timerType_enum TimType;
+	void* next;
+#endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
 }Timerwp_t;
 
+#ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
 Timerwp_t* RegisteredTimers[MAX_REGISTER_NUM];
+#endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
 
 typedef struct {
 	uint32_t lastTimeFix;
@@ -48,7 +54,6 @@ typedef struct {
 
 void InitStopWatchWP(stopwatchwp_t* timeMeasure, tickptr_fn* SpecifyTickFunction);
 void InitTimerWP(Timerwp_t* Timer, tickptr_fn* SpecifyTickFunction);
-
 uint32_t StopWatchWP(stopwatchwp_t* timeMeasure);
 uint32_t CyclicStopWatchWP(stopwatchwp_t* timeMeasure, uint16_t Ncycle);
 
@@ -57,9 +62,10 @@ void StopTimerWP(Timerwp_t* Timer);
 uint8_t IsTimerWPStarted(Timerwp_t* Timer);
 uint8_t IsTimerWPRinging(Timerwp_t* Timer);
 uint8_t RestartTimerWP(Timerwp_t* Timer);
-
+#ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
 uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, enum timerType_enum timType, tickptr_fn* SpecifyTickFunc);
 uint8_t UnRegisterTimerCallback(Timerwp_t* Timer);
 uint8_t RegisteredTimersCallbackHandle(Timerwp_t* Timer);
 uint8_t getRegistersMaxIndex(void);
+#endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
 #endif // !__SIMPLETIMER_H_

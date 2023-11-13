@@ -97,11 +97,11 @@ static void ThirdCallback(void* arg)
 		printf("Measured time is %u ms!\n", Test15s.measuredTime);  //measuredTime = 15015...15016 ms
 }
 
-static uint32_t globTick = 0;
+static uint32_t myTick = 0;
 //Some Example:
 static void simulateTick(void)
 {
-	globTick++;
+	myTick++;
 	return;
 	/*As example use this func as a reference tick to your specific timer:*/
 	/*
@@ -111,5 +111,5 @@ static void simulateTick(void)
 
 static uint32_t getSimulatedTick(void)
 {
-	return globTick;
+	return myTick;
 }
