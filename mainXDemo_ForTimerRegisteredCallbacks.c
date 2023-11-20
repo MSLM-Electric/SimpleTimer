@@ -106,7 +106,7 @@ static void simulateTick(void)
 	/*As example use this func as a reference tick to your specific timer:*/
 	/*
 	Timerwp_t MySimulatorTimer = {0};
-	MySimulatorTimer.ptrToTick = (tickptr_fn*)simulateTick;*/
+	MySimulatorTimer.ptrToTick = (tickptr_fn*)getSimulatedTick;*/
 }
 
 static uint32_t getSimulatedTick(void)
