@@ -5,7 +5,10 @@
 #include <string.h> //only for memset
 
 #ifndef __SIMPLETIMER_H_
-#define DEBUG_ON_VS
+#define DEBUG_ON_VS //delete this line if you don't want debug on VS!!!
+#ifdef DEBUG_ON_VS
+#include <Windows.h>
+#endif
 #define USE_REGISTERING_TIMERS_WITH_CALLBACK
 
 #define ms_x100us(x) x*10 //1ms is  10 x 100microseconds

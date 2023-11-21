@@ -58,6 +58,10 @@ int main(void)
 			UnRegisterTimerCallback(&Timer2s);
 		if(testVarcmd == 3)
 			UnRegisterTimerCallback(&Timer10sOne);
+		if (testVarcmd == 4)
+			UnRegisterTimerCallback(&Timer15s);
+		if(testVarcmd == 5)
+			UnRegisterTimerCallback(&Timer5sOneS);
 		//simulateTick();
 	}
 }

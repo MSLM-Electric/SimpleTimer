@@ -1,6 +1,6 @@
 /**
 * Author          : Osim Abdulhamidov
-* Company         : MSLM Electric & Engineering
+* Company         : MSLM Electric
 * Project         : Simple timer
 * MCU or CPU      : Any
 * Created on October 13, 2023
@@ -116,9 +116,9 @@ put:
 time - the value that after reaching it IsTimerWPRinging(&MyTimer) gets true*/
 void LaunchTimerWP(uint32_t time, Timerwp_t* Timer)
 {
-	if (Timer->ptrToTick == NULL)
-		return;
 	if (Timer != NULL) {
+		if (Timer->ptrToTick == NULL)
+			return;
 		if (Timer->Start == 0)
 		{
 			Timer->setVal = time;
@@ -131,9 +131,9 @@ void LaunchTimerWP(uint32_t time, Timerwp_t* Timer)
 
 void StopTimerWP(Timerwp_t* Timer) //or RestartTimer
 {
-	if (Timer->ptrToTick == NULL)
-		return;
 	if (Timer != NULL) {
+		//if (Timer->ptrToTick == NULL)
+		//	return;
 		Timer->setVal = 0;
 		Timer->launchedTime = 0;
 		Timer->Start = 0;
@@ -142,18 +142,18 @@ void StopTimerWP(Timerwp_t* Timer) //or RestartTimer
 }
 
 uint8_t IsTimerWPStarted(Timerwp_t* Timer) {
-	if (Timer->ptrToTick == NULL)
-		return 0;
 	if (Timer != NULL) {
+		if (Timer->ptrToTick == NULL)
+			return 0;
 		return Timer->Start;
 	}
 	return 0;
 }
 
 uint8_t IsTimerWPRinging(Timerwp_t* Timer) {
-	if (Timer->ptrToTick == NULL)
-		return 0;
 	if (Timer != NULL) {
+		if (Timer->ptrToTick == NULL)
+			return 0;
         uint32_t tickTime = (uint32_t)(Timer->ptrToTick());
 		if (((tickTime - Timer->launchedTime) > Timer->setVal) * Timer->Start)
 			return 1; //yes, timer is ringing!
@@ -208,8 +208,6 @@ uint8_t UnRegisterTimerCallback(Timerwp_t* Timer)
 				if (doOnce && (i > 0)) {
 					RegisteredTimers[n]->next = RegisteredTimers[i - 1];
 					doOnce = 0;}
-				else
-					RegisteredTimers[n] = NULL;
 				if (i == 0)
 					RegisteredTimers[i]->next = NULL;  //delete the nextptr on 0-th array or 1st member on regtimer
 			}
@@ -220,6 +218,9 @@ uint8_t UnRegisterTimerCallback(Timerwp_t* Timer)
 	}
 	if (k <= NRegister)
 		return 241; //This Timer not registered, not found!
+	for (uint8_t n = NRegister; n < MAX_REGISTER_NUM; n++) {
+		RegisteredTimers[n] = NULL;
+	}
 	return 0;
 }
 
