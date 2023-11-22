@@ -43,7 +43,7 @@ typedef struct {
 }Timerwp_t;
 
 #ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
-Timerwp_t* RegisteredTimers[MAX_REGISTER_NUM];
+extern Timerwp_t* RegisteredTimers[MAX_REGISTER_NUM];
 #endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
 
 typedef struct {
