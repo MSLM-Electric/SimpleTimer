@@ -71,8 +71,8 @@ uint8_t UnRegisterTimerCallback(Timerwp_t* Timer);
 uint8_t RegisteredTimersCallbackHandle(Timerwp_t* Timer);
 uint8_t getRegisterTimersMaxIndex(void);
 #endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
-//#define USE_RTOS
-#ifdef USE_RTOS
+//#define USING_RTOS
+#ifdef USING_RTOS
 void TaskYieldWithinSpecifiedTime(const uint32_t time, Timerwp_t* Timer);
 #endif
 #endif // !__SIMPLETIMER_H_

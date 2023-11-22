@@ -257,10 +257,12 @@ uint8_t getRegisterTimersMaxIndex(void)
 }
 #endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
 
-#ifdef USE_RTOS
+#ifdef USING_RTOS
 #ifndef taskYIELD
-//#include "task.h"
-#define taskYIELD()  //portYILED() //put here the Task switch context macro from your RTOS
+//#include "cmsis_os.h" //as Example. //put here the Task switch context macro from your RTOS or include the RTOS header
+#ifdef DEBUG_ON_VS
+#define taskYIELD()
+#endif // DEBUG_ON_VS
 #endif // !taskYIELD
 void TaskYieldWithinSpecifiedTime(const uint32_t time, Timerwp_t* Timer)
 {
