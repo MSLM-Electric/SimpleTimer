@@ -154,9 +154,11 @@ uint8_t IsTimerWPRinging(Timerwp_t* Timer) {
 	if (Timer != NULL) {
 		if (Timer->ptrToTick == NULL)
 			return 0;
-        uint32_t tickTime = (uint32_t)(Timer->ptrToTick());
-		if (((tickTime - Timer->launchedTime) > Timer->setVal) * Timer->Start)
-			return 1; //yes, timer is ringing!
+		if (Timer->Start) {
+			uint32_t tickTime = (uint32_t)(Timer->ptrToTick());
+			if ((tickTime - Timer->launchedTime) > Timer->setVal)
+				return 1; //yes, timer is ringing!
+		}
 	}
 	return 0; //nope!
 }
@@ -245,7 +247,7 @@ uint8_t RegisteredTimersCallbackHandle(Timerwp_t* Timer)
 	return 0;
 }
 
-uint8_t getRegistersMaxIndex(void)
+uint8_t getRegisterTimersMaxIndex(void)
 {
 	if (NRegister > 0) {
 		return NRegister - 1;

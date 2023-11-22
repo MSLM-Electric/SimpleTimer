@@ -69,7 +69,7 @@ int main(void)
 
 void InterruptHardwareTimerImmitation(void)
 {
-	RegisteredTimersCallbackHandle(RegisteredTimers[getRegistersMaxIndex()]);
+	RegisteredTimersCallbackHandle(RegisteredTimers[getRegisterTimersMaxIndex()]);
 	return;
 }
 
