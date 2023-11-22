@@ -56,9 +56,10 @@ or just:
 InitStopWatchWP(&microsecondT, (tickptr_fn*)usTick);
 InitTimerWP(&MyTimer1, (tickptr_fn*)HAL_GetTick); //for MyTimer1 use the HAL_GetTick() fucntion;
 */
-
+#ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
 /*static*/ Timerwp_t* RegisteredTimers[MAX_REGISTER_NUM];
 static uint8_t NRegister = 0;
+#endif
 
 void InitStopWatchWP(stopwatchwp_t* timeMeasure, tickptr_fn* SpecifyTickFunction)
 {
@@ -175,7 +176,7 @@ uint8_t RestartTimerWP(Timerwp_t* Timer)
 }
 
 #ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
-uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, enum timerType_enum timType, tickptr_fn *SpecifyTickFunc)
+uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, timerType_enum timType, tickptr_fn *SpecifyTickFunc)
 {
 	if (NRegister) {
 		if (NRegister < MAX_REGISTER_NUM)
@@ -255,3 +256,19 @@ uint8_t getRegisterTimersMaxIndex(void)
 	return 255; //bad res!
 }
 #endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
+
+#ifdef USE_RTOS
+#ifndef taskYIELD
+//#include "task.h"
+#define taskYIELD()  //portYILED() //put here the Task switch context macro from your RTOS
+#endif // !taskYIELD
+void TaskYieldWithinSpecifiedTime(const uint32_t time, Timerwp_t* Timer)
+{
+	LaunchTimerWP(time, Timer);
+	while (!IsTimerWPRinging(Timer))
+	{
+		taskYIELD();
+	}
+	StopTimerWP(Timer);
+}
+#endif // USE_RTOS

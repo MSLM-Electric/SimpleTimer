@@ -24,7 +24,7 @@ typedef void* (timerwpcallback_fn)(void* arg);
 #define MAX_REGISTER_NUM 10
 #endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
 
-enum {
+typedef enum {
 	ONE_SHOT_TIMER,
 	PERIODIC_TIMER
 }timerType_enum;
@@ -34,7 +34,7 @@ typedef struct {
 	uint32_t launchedTime;
 	uint8_t Start;
 	tickptr_fn* ptrToTick;
-	enum timerType_enum TimType;
+    timerType_enum TimType;
 #ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
 	timerwpcallback_fn* RegisteredCallback;
 	void* arg;
@@ -66,9 +66,13 @@ uint8_t IsTimerWPStarted(Timerwp_t* Timer);
 uint8_t IsTimerWPRinging(Timerwp_t* Timer);
 uint8_t RestartTimerWP(Timerwp_t* Timer);
 #ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
-uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, enum timerType_enum timType, tickptr_fn* SpecifyTickFunc);
+uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, timerType_enum timType, tickptr_fn* SpecifyTickFunc);
 uint8_t UnRegisterTimerCallback(Timerwp_t* Timer);
 uint8_t RegisteredTimersCallbackHandle(Timerwp_t* Timer);
 uint8_t getRegisterTimersMaxIndex(void);
 #endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
+//#define USE_RTOS
+#ifdef USE_RTOS
+void TaskYieldWithinSpecifiedTime(const uint32_t time, Timerwp_t* Timer);
+#endif
 #endif // !__SIMPLETIMER_H_

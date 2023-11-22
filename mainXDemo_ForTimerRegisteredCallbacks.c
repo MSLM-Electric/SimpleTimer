@@ -62,7 +62,13 @@ int main(void)
 			UnRegisterTimerCallback(&Timer15s);
 		if(testVarcmd == 5)
 			UnRegisterTimerCallback(&Timer5sOneS);
-		//simulateTick();
+#ifdef USE_RTOS
+		if (testVarcmd == 6) {
+			if(!IsTimerWPStarted(&Timer3s))
+				TaskYieldWithinSpecifiedTime((U32_ms)15000, &Timer3s); //As example
+		}
+#endif // USE_RTOS
+		//simulateTick();		
 	}
 }
 
