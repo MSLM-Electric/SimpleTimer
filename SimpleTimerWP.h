@@ -65,6 +65,7 @@ void StopTimerWP(Timerwp_t* Timer);
 uint8_t IsTimerWPStarted(Timerwp_t* Timer);
 uint8_t IsTimerWPRinging(Timerwp_t* Timer);
 uint8_t RestartTimerWP(Timerwp_t* Timer);
+void catchBreakPoint(uint32_t *var); //Click to set breakpoint there where it called when debugging
 #ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
 uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, timerType_enum timType, tickptr_fn* SpecifyTickFunc);
 uint8_t UnRegisterTimerCallback(Timerwp_t* Timer);

@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "OldVersion/SimpleTimer.h"
+#include "SimpleTimer.h"
 #ifdef DEBUG_ON_VS
 #include <Windows.h>
 #endif // DEBUG_ON_VS
@@ -46,9 +46,6 @@ int main(void)
 			StopTimerSpec(&Timer1);
 			LaunchTimerSpec(15, &Timer1);
 		}
-#include "SimpleTimerWP.h"
-		stopwatchwp_t timeM;
-		InitStopWatchWP(&timeM, (tickptr_fn*)GetTickCount);
 	}
 }
 

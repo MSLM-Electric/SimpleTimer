@@ -273,4 +273,11 @@ void TaskYieldWithinSpecifiedTime(const uint32_t time, Timerwp_t* Timer)
 	}
 	StopTimerWP(Timer);
 }
-#endif // USE_RTOS
+#endif // USING_RTOS
+
+void catchBreakPoint(uint32_t* var)
+{
+	*var = *var + 1;
+	*var = *var - 1;
+	return;
+}
