@@ -135,7 +135,7 @@ void StopTimerWP(Timerwp_t* Timer) //or RestartTimer
 	if (Timer != NULL) {
 		//if (Timer->ptrToTick == NULL)
 		//	return;
-		Timer->setVal = 0;
+		//Timer->setVal = 0; //!?
 		Timer->launchedTime = 0;
 		Timer->Start = 0;
 	}
@@ -253,7 +253,7 @@ uint8_t getRegisterTimersMaxIndex(void)
 	if (NRegister > 0) {
 		return NRegister - 1;
 	}
-	return 255; //bad res!
+	return 255; //bad res! //maybe it has sense to return 0 even when error; cause the protections on functions already prepared! (If don't to do it that mayb very dangerous code while using RegisteredTimersCallbackHandle(RegisteredTimers[255])!)
 }
 #endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
 
