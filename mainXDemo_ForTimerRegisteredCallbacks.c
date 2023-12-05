@@ -21,10 +21,12 @@ static void ThirdCallback(void* arg);
 void InterruptHardwareTimerImmitation(void);
 static void simulateTick(void);
 static uint32_t getSimulatedTick(void);
+static void LoadTooMuchTimers(void);
+static void StressTests(void);
 
-int main(void)
+void InitTimersRegistration(void)
 {
-	RegisterTimerCallback(&Timer1s, (timerwpcallback_fn *)TimersCallback, PERIODIC_TIMER, (tickptr_fn*)GetTickCount);
+	RegisterTimerCallback(&Timer1s, (timerwpcallback_fn*)TimersCallback, PERIODIC_TIMER, (tickptr_fn*)GetTickCount);
 	RegisterTimerCallback(&Timer2s, (timerwpcallback_fn*)TimersCallback, PERIODIC_TIMER, (tickptr_fn*)GetTickCount);
 	RegisterTimerCallback(&Timer3s, (timerwpcallback_fn*)TimersCallback, PERIODIC_TIMER, (tickptr_fn*)GetTickCount);
 	RegisterTimerCallback(&Timer5sOneS, (timerwpcallback_fn*)TimersCallback, ONE_SHOT_TIMER, (tickptr_fn*)GetTickCount);
@@ -35,9 +37,15 @@ int main(void)
 	LaunchTimerWP(1000, &Timer1s);
 	LaunchTimerWP(2000, &Timer2s);
 	LaunchTimerWP(3000, &Timer3s);
-	LaunchTimerWP(5000, &Timer5sOneS);	
+	LaunchTimerWP(5000, &Timer5sOneS);
 	LaunchTimerWP((U32_ms)10000, &Timer10sOne);
 	LaunchTimerWP(15000, &Timer15s);
+	return;
+}
+
+int main(void)
+{
+	InitTimersRegistration();
 	InitTimerWP(&ms_Delay, (tickptr_fn*)GetTickCount);  //its just simple timer/delay. It func. is just do some delay operation not precisiously
 	InitTimerWP(&Delay10s, (tickptr_fn*)GetTickCount);
 	LaunchTimerWP((U32_ms)10, &ms_Delay); //10ms delay
@@ -68,6 +76,23 @@ int main(void)
 				TaskYieldWithinSpecifiedTime((U32_ms)15000, &Timer3s); //As example
 		}
 #endif // USE_RTOS
+		if (testVarcmd == 7) {
+			InitTimersRegistration();
+		}
+		if (testVarcmd == 8) { //Unreg all timers
+			Timerwp_t* timPtr = RegisteredTimers[getRegisterTimersMaxIndex()];
+			for (timPtr; timPtr != NULL; timPtr->next) {
+				UnRegisterTimerCallback(timPtr);
+				timPtr = RegisteredTimers[getRegisterTimersMaxIndex()];
+			}
+		}
+		if (testVarcmd == 9) {
+			LoadTooMuchTimers();
+			testVarcmd = 0; //Do it only once!
+		}
+		if (testVarcmd == 10) {
+			StressTests();
+		}
 		//simulateTick();		
 	}
 }
@@ -122,4 +147,20 @@ static void simulateTick(void)
 static uint32_t getSimulatedTick(void)
 {
 	return myTick;
+}
+static Timerwp_t Timers[MAX_REGISTER_NUM + 3];
+static void LoadTooMuchTimers(void)
+{
+	uint8_t DangerousNum = (MAX_REGISTER_NUM + 3);
+	memset(Timers, 0, sizeof(Timers));
+	for (uint8_t i = 0; i < DangerousNum; i++) {
+		RegisterTimerCallback(&Timers[i], (timerwpcallback_fn*)TimersCallback, PERIODIC_TIMER, (tickptr_fn*)GetTickCount);
+	}
+	return;
+}
+
+static void StressTests(void)
+{
+	/*empty yet*/
+	return;
 }

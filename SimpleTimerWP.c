@@ -179,10 +179,13 @@ uint8_t RestartTimerWP(Timerwp_t* Timer)
 uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, timerType_enum timType, tickptr_fn *SpecifyTickFunc)
 {
 	if (NRegister) {
-		if (NRegister < MAX_REGISTER_NUM)
-			Timer->next = (Timerwp_t *)RegisteredTimers[NRegister - 1];
-		else
+		if (NRegister > MAX_REGISTER_NUM-1)
 			return 240;
+		for (uint8_t k = 0; k <= NRegister; k++) {  //Check timers existance  //Double registering protection
+			if ((Timer == RegisteredTimers[k]))
+				return 242; //This timer already registered!
+		}		
+		Timer->next = (Timerwp_t *)RegisteredTimers[NRegister - 1];
 	}
 	Timer->RegisteredCallback = ThisTimerCallback;
 	RegisteredTimers[NRegister] = Timer;
@@ -253,7 +256,7 @@ uint8_t getRegisterTimersMaxIndex(void)
 	if (NRegister > 0) {
 		return NRegister - 1;
 	}
-	return 255; //bad res! //maybe it has sense to return 0 even when error; cause the protections on functions already prepared! (If don't to do it that mayb very dangerous code while using RegisteredTimersCallbackHandle(RegisteredTimers[255])!)
+	return 0; //255 bad res! //maybe it has sense to return 0 even when error; cause the protections on functions already prepared! (If don't to do it that mayb very dangerous code while using RegisteredTimersCallbackHandle(RegisteredTimers[255])!)
 }
 #endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
 
