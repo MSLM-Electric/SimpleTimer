@@ -32,6 +32,7 @@
 	* OF SUCH DAMAGE.
 
 	Author: github.com/MSLM-Electric/
+	E-mail: mslmelectric@gmail.com
 */
 
 #include "SimpleTimerWP.h"  //WP means "WITH POINTER". 

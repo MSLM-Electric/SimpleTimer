@@ -124,6 +124,7 @@ static void AnotherCallback(void* arg)
 static void ThirdCallback(void* arg)
 {
 	uint8_t data = ((uint8_t *)arg)[0];
+	uint8_t data2 = *(const uint8_t *)arg;  //same as above
 	if (data)
 		printf("after 15s, var is TRUE!\n");
 	else
