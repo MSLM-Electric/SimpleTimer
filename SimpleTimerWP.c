@@ -68,6 +68,7 @@ void InitStopWatchWP(stopwatchwp_t* timeMeasure, tickptr_fn* SpecifyTickFunction
 
 void InitTimerWP(Timerwp_t* Timer, tickptr_fn* SpecifyTickFunction)
 {
+	memset(Timer, 0, sizeof(Timerwp_t));
 	Timer->ptrToTick = SpecifyTickFunction;
 	StopTimerWP(Timer);
 }
@@ -129,12 +130,12 @@ void LaunchTimerWP(uint32_t time, Timerwp_t* Timer)
 	return;
 }
 
-void StopTimerWP(Timerwp_t* Timer) //or RestartTimer
+void StopTimerWP(Timerwp_t* Timer)
 {
 	if (Timer != NULL) {
 		//if (Timer->ptrToTick == NULL)
 		//	return;
-		//Timer->setVal = 0; //!?
+		//Timer->setVal = 0;
 		Timer->launchedTime = 0;
 		Timer->Start = 0;
 	}

@@ -46,7 +46,7 @@ void InitTimersRegistration(void)
 int main(void)
 {
 	InitTimersRegistration();
-	InitTimerWP(&ms_Delay, (tickptr_fn*)GetTickCount);  //its just simple timer/delay. It func. is just do some delay operation not precisiously
+	InitTimerWP(&ms_Delay, (tickptr_fn*)GetTickCount);  //its just simple timer/delay. It func. is just do some delay operation not precisiously and without blocking
 	InitTimerWP(&Delay10s, (tickptr_fn*)GetTickCount);
 	LaunchTimerWP((U32_ms)10, &ms_Delay); //10ms delay
 	LaunchTimerWP((U32_ms)10000, &Delay10s);
