@@ -142,6 +142,34 @@ void StopTimerWP(Timerwp_t* Timer)
 	return;
 }
 
+void InitGroupTimer(Timerwp_t* ArrTimers, tickptr_fn* SpecifyTickFunction, uint8_t qntyTimers, uint32_t setVals)
+{
+	for (uint8_t u = 0; u < qntyTimers; u++)
+	{
+		InitTimerWP(&ArrTimers[u], SpecifyTickFunction);
+		ArrTimers[u].setVal = setVals;
+	}
+}
+
+void StopGroupTimer(Timerwp_t* ArrTimers, uint8_t qntyTimers)
+{
+	for (uint8_t u = 0; u < qntyTimers; u++)
+	{
+		StopTimerWP(&ArrTimers[u]);
+	}
+}
+
+uint8_t RestartGroupTimer(Timerwp_t* ArrTimers, uint8_t qntyTimers)
+{
+	uint8_t res = 0;
+	for (uint8_t u = 0; u < qntyTimers; u++)
+	{
+		//if (ArrTimers[u].TimType != PERIODIC_TIMER)
+			res |= RestartTimerWP(&ArrTimers[u]);
+	}
+	return res;
+}
+
 uint8_t IsTimerWPStarted(Timerwp_t* Timer) {
 	if (Timer != NULL) {
 		if (Timer->ptrToTick == NULL)

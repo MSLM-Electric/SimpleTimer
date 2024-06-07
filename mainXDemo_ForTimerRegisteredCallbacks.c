@@ -5,6 +5,12 @@
 #include <Windows.h>
 #endif // DEBUG_ON_VS
 
+typedef struct {
+	Timerwp_t Timers[5];
+	uint32_t state;
+}SomeProcess_t;
+SomeProcess_t SomeProcess;
+
 Timerwp_t Timer3s = { 0 },
 Timer2s = { 0 }, 
 Timer1s = { 0 }, 
@@ -40,6 +46,7 @@ void InitTimersRegistration(void)
 	LaunchTimerWP(5000, &Timer5sOneS);
 	LaunchTimerWP((U32_ms)10000, &Timer10sOne);
 	LaunchTimerWP(15000, &Timer15s);
+	InitGroupTimer(SomeProcess.Timers, (tickptr_fn*)GetTickCount, sizeof(SomeProcess.Timers) / sizeof(Timerwp_t), (U32_ms)1000);
 	return;
 }
 
@@ -60,8 +67,10 @@ int main(void)
 			StopTimerWP(&Delay10s);
 			UnRegisterTimerCallback(&Timer3s);
 		}
-		if(testVarcmd==1)
+		if (testVarcmd == 1) {
 			UnRegisterTimerCallback(&Timer1s);
+			RestartGroupTimer(SomeProcess.Timers, sizeof(SomeProcess.Timers) / sizeof(Timerwp_t));
+		}
 		if (testVarcmd == 2)
 			UnRegisterTimerCallback(&Timer2s);
 		if(testVarcmd == 3)
