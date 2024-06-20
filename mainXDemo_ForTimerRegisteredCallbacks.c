@@ -46,7 +46,7 @@ void InitTimersRegistration(void)
 	LaunchTimerWP(5000, &Timer5sOneS);
 	LaunchTimerWP((U32_ms)10000, &Timer10sOne);
 	LaunchTimerWP(15000, &Timer15s);
-	InitGroupTimer(SomeProcess.Timers, (tickptr_fn*)GetTickCount, sizeof(SomeProcess.Timers) / sizeof(Timerwp_t), (U32_ms)1000);
+	InitTimerGroup(SomeProcess.Timers, (tickptr_fn*)GetTickCount, sizeof(SomeProcess.Timers) / sizeof(Timerwp_t), (U32_ms)1000);
 	return;
 }
 
@@ -69,7 +69,7 @@ int main(void)
 		}
 		if (testVarcmd == 1) {
 			UnRegisterTimerCallback(&Timer1s);
-			RestartGroupTimer(SomeProcess.Timers, sizeof(SomeProcess.Timers) / sizeof(Timerwp_t));
+			RestartTimerGroup(SomeProcess.Timers, sizeof(SomeProcess.Timers) / sizeof(Timerwp_t));
 		}
 		if (testVarcmd == 2)
 			UnRegisterTimerCallback(&Timer2s);

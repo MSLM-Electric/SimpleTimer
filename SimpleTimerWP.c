@@ -142,7 +142,7 @@ void StopTimerWP(Timerwp_t* Timer)
 	return;
 }
 
-void InitGroupTimer(Timerwp_t* ArrTimers, tickptr_fn* SpecifyTickFunction, uint8_t qntyTimers, uint32_t setVals)
+void InitTimerGroup(Timerwp_t* ArrTimers, tickptr_fn* SpecifyTickFunction, uint8_t qntyTimers, uint32_t setVals)
 {
 	for (uint8_t u = 0; u < qntyTimers; u++)
 	{
@@ -151,7 +151,7 @@ void InitGroupTimer(Timerwp_t* ArrTimers, tickptr_fn* SpecifyTickFunction, uint8
 	}
 }
 
-void StopGroupTimer(Timerwp_t* ArrTimers, uint8_t qntyTimers)
+void StopTimerGroup(Timerwp_t* ArrTimers, uint8_t qntyTimers)
 {
 	for (uint8_t u = 0; u < qntyTimers; u++)
 	{
@@ -159,7 +159,7 @@ void StopGroupTimer(Timerwp_t* ArrTimers, uint8_t qntyTimers)
 	}
 }
 
-uint8_t RestartGroupTimer(Timerwp_t* ArrTimers, uint8_t qntyTimers)
+uint8_t RestartTimerGroup(Timerwp_t* ArrTimers, uint8_t qntyTimers)
 {
 	uint8_t res = 0;
 	for (uint8_t u = 0; u < qntyTimers; u++)
