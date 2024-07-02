@@ -66,11 +66,18 @@ void InitStopWatchWP(stopwatchwp_t* timeMeasure, tickptr_fn* SpecifyTickFunction
 	timeMeasure->ptrToTick = SpecifyTickFunction;
 }
 
+void InitStopWatchGroup(stopwatchwp_t *stopwatchArr, tickptr_fn* SpecifyTickFunction, uint8_t qnty)
+{
+	uint8_t u;
+	for (u = 0; u < qnty; u++) {
+		InitStopWatchWP(&stopwatchArr[u], SpecifyTickFunction);
+	}
+}
+
 void InitTimerWP(Timerwp_t* Timer, tickptr_fn* SpecifyTickFunction)
 {
 	memset(Timer, 0, sizeof(Timerwp_t));
 	Timer->ptrToTick = SpecifyTickFunction;
-	StopTimerWP(Timer);
 }
 
 //StopWatchPointToPointStart(&watch);
@@ -185,7 +192,7 @@ uint8_t IsTimerWPRinging(Timerwp_t* Timer) {
 			return 0;
 		if (Timer->Start) {
 			uint32_t tickTime = (uint32_t)(Timer->ptrToTick());
-			if ((tickTime - Timer->launchedTime) > Timer->setVal)
+			if ((tickTime - Timer->launchedTime) >= Timer->setVal)
 				return 1; //yes, timer is ringing!
 		}
 	}

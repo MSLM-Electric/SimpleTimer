@@ -19,6 +19,7 @@ Timer10sOne = {0},
 Timer15s = {0},
 ms_Delay = { 0 }, Delay10s = { 0 };
 stopwatchwp_t Test15s = { 0 };
+static stopwatchwp_t timeMeasure[5];
 uint8_t testVarcmd = 0;
 extern Timerwp_t* RegisteredTimers[];
 static void TimersCallback(void* arg);
@@ -52,6 +53,8 @@ void InitTimersRegistration(void)
 
 int main(void)
 {
+	uint8_t stopwatchesQnty = sizeof(timeMeasure) / sizeof(stopwatchwp_t);
+	InitStopWatchGroup(timeMeasure, (tickptr_fn*)GetTickCount, stopwatchesQnty);
 	InitTimersRegistration();
 	InitTimerWP(&ms_Delay, (tickptr_fn*)GetTickCount);  //its just simple timer/delay. It func. is just do some delay operation not precisiously and without blocking
 	InitTimerWP(&Delay10s, (tickptr_fn*)GetTickCount);
@@ -61,10 +64,13 @@ int main(void)
 	{		
 		if (IsTimerWPRinging(&ms_Delay)) {
 			RestartTimerWP(&ms_Delay);
+			//printf("%u ms measured val is: %u\n", ms_Delay.setVal, StopWatchWP(&timeMeasure[1]));
 			InterruptHardwareTimerImmitation();
 		}
 		if (IsTimerWPRinging(&Delay10s)) {
-			StopTimerWP(&Delay10s);
+			RestartTimerWP(&Delay10s);
+			printf("10s measured val is: %u\n", StopWatchWP(&timeMeasure[2]));
+			//StopTimerWP(&Delay10s);
 			UnRegisterTimerCallback(&Timer3s);
 		}
 		if (testVarcmd == 1) {
@@ -117,6 +123,7 @@ static void TimersCallback(void* arg)
 {
 	Timerwp_t* timPtr = arg;
 	printf("%u ms left!\n", timPtr->setVal);
+	printf("%u ms measured value\n", StopWatchWP(&timeMeasure[0]));
 	return;
 }
 

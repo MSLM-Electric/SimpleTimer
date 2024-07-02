@@ -56,6 +56,7 @@ typedef struct {
 }stopwatchwp_t;
 
 void InitStopWatchWP(stopwatchwp_t* timeMeasure, tickptr_fn* SpecifyTickFunction);
+void InitStopWatchGroup(stopwatchwp_t* stopwatchArr, tickptr_fn* SpecifyTickFunction, uint8_t qnty);
 void InitTimerWP(Timerwp_t* Timer, tickptr_fn* SpecifyTickFunction);
 void InitTimerGroup(Timerwp_t* ArrTimers, tickptr_fn* SpecifyTickFunction, uint8_t qntyTimers, uint32_t setVals);
 uint32_t StopWatchWP(stopwatchwp_t* timeMeasure);
