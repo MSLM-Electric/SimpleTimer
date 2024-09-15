@@ -81,11 +81,17 @@ void LaunchSpecifiedTimer(uint32_t time, Timer_t* Timer)
 void StopSpecifiedTimer(Timer_t* Timer) //or RestartTimer
 {
 	if (Timer != NULL) {
-		Timer->setVal = 0;
+		//Timer->setVal = 0;
 		Timer->launchedTime = 0;
 		Timer->Start = 0;
 	}
 	return;
+}
+
+void RestartSpecifiedTimer(Timer_t* Timer)
+{
+  StopSpecifiedTimer(Timer);
+  LaunchSpecifiedTimer(Timer->setVal, Timer);
 }
 
 uint8_t IsTimerStarted(Timer_t* Timer) {
@@ -106,7 +112,7 @@ uint8_t IsTimerRinging(Timer_t* Timer) {
 		uint32_t tickTime = someExternalTick;
 		/*  ending your code  */
 #endif
-		if (((tickTime - Timer->launchedTime) > Timer->setVal) * Timer->Start)
+		if (((tickTime - Timer->launchedTime) >= Timer->setVal) * Timer->Start)
 			return 1; //yes, timer is ringing!
 	}
 	return 0; //nope!
