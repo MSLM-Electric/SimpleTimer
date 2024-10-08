@@ -16,6 +16,11 @@ extern uint32_t someExternalTick;
 
 #define ms_x100us(x) x*10 //1ms is  10 x 100microseconds
 #define ms_x10us(x) x*100 //2ms is  200 x 10microseconds
+#define x10ms    //just for beautyfying and readability code
+#define x100ms
+#define x1s
+#define x10us
+#define x100us   //just for beautyfying and readability code
 
 typedef struct {
 	uint32_t setVal;

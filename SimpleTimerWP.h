@@ -13,6 +13,12 @@
 
 #define ms_x100us(x) x*10 //1ms is  10 x 100microseconds
 #define ms_x10us(x) x*100 //2ms is  200 x 10microseconds
+#define x10ms  //just for beautyfying and readability code
+#define x100ms
+#define x1s
+#define x10us
+#define x100us //just for beautyfying and readability code
+
 typedef uint32_t U32_ms;
 typedef uint32_t U32_us;
 
@@ -42,6 +48,13 @@ typedef struct {
 #endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
 }Timerwp_t;
 
+typedef struct {
+	uint32_t setVal;
+	uint32_t launchedTime;
+	uint8_t Start;
+	timerType_enum TimType;
+}SimpleTimer_t;
+
 #ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
 extern Timerwp_t* RegisteredTimers[MAX_REGISTER_NUM];
 #endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
@@ -67,6 +80,7 @@ void StopTimerWP(Timerwp_t* Timer);
 void StopTimerGroup(Timerwp_t* ArrTimers, uint8_t qntyTimers);
 uint8_t IsTimerWPStarted(Timerwp_t* Timer);
 uint8_t IsTimerWPRinging(Timerwp_t* Timer);
+uint8_t IsTimerRingingKnowByRef(SimpleTimer_t *Timer, uint32_t asRef);
 uint8_t RestartTimerWP(Timerwp_t* Timer);
 uint8_t RestartTimerGroup(Timerwp_t* ArrTimers, uint8_t qntyTimers);
 void catchBreakPoint(uint32_t *var); //Click to set breakpoint there where it called when debugging

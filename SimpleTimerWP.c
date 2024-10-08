@@ -137,6 +137,21 @@ void LaunchTimerWP(uint32_t time, Timerwp_t* Timer)
 	return;
 }
 
+void LaunchTimerByRef(uint32_t time, SimpleTimer_t* Timer, uint32_t asRef)
+{
+	if (Timer != NULL) {
+		if (asRef == 0)
+			return;
+		if (Timer->Start == 0)
+		{
+			Timer->setVal = time;
+			Timer->launchedTime = (uint32_t)(asRef);
+		}
+		Timer->Start = 1;
+	}
+	return;
+}
+
 void StopTimerWP(Timerwp_t* Timer)
 {
 	if (Timer != NULL) {
@@ -146,6 +161,12 @@ void StopTimerWP(Timerwp_t* Timer)
 		Timer->launchedTime = 0;
 		Timer->Start = 0;
 	}
+	return;
+}
+
+void StopSimpleTimer(SimpleTimer_t* Timer)
+{
+	StopTimerWP((Timerwp_t*)Timer); //?
 	return;
 }
 
@@ -199,6 +220,18 @@ uint8_t IsTimerWPRinging(Timerwp_t* Timer) {
 	return 0; //nope!
 }
 
+uint8_t IsTimerRingingKnowByRef(SimpleTimer_t *Timer, uint32_t asRef)
+{
+	if (Timer != NULL) {
+		if (Timer->Start) {
+			/*tickTime = asRef;*/
+			if ((asRef - Timer->launchedTime) >= Timer->setVal)
+				return 1; //yes, timer is ringing!
+		}
+	}
+	return 0; //nope!
+}
+
 uint8_t RestartTimerWP(Timerwp_t* Timer)
 {
 	if ((Timer->ptrToTick == NULL) || (Timer == NULL))
@@ -206,6 +239,17 @@ uint8_t RestartTimerWP(Timerwp_t* Timer)
 	if (Timer->setVal < 0)
 		return 254;
 	Timer->launchedTime = (uint32_t)(Timer->ptrToTick());
+	Timer->Start = 1;
+	return 0;
+}
+
+uint8_t RestartTimerByRef(SimpleTimer_t* Timer, uint32_t asRef)
+{
+	if (Timer == NULL)
+		return 255;
+	if (Timer->setVal < 0)
+		return 254;
+	Timer->launchedTime = (uint32_t)(asRef);
 	Timer->Start = 1;
 	return 0;
 }
