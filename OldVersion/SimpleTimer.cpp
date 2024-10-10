@@ -220,7 +220,7 @@ uint32_t CyclicStopWatchSpec(specStopwatch_t* timeMeasure, uint16_t Ncycle)
 void LaunchTimerSpec(uint32_t time, SpecTimer_t* Timer)
 {
 	if (Timer->ptrToTick == NULL)
-		return 0;
+		return;
 	if (Timer != NULL) {
 		if (Timer->Start == 0)
 		{
@@ -235,7 +235,7 @@ void LaunchTimerSpec(uint32_t time, SpecTimer_t* Timer)
 void StopTimerSpec(SpecTimer_t* Timer) //or RestartTimer
 {
 	if (Timer->ptrToTick == NULL)
-		return 0;
+		return;
 	if (Timer != NULL) {
 		Timer->setVal = 0;
 		Timer->launchedTime = 0;

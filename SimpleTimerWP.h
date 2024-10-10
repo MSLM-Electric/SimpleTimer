@@ -39,13 +39,13 @@ typedef struct {
 	uint32_t setVal;
 	uint32_t launchedTime;
 	uint8_t Start;
-	tickptr_fn* ptrToTick;
     timerType_enum TimType;
+	tickptr_fn* ptrToTick;
 #ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
 	timerwpcallback_fn* RegisteredCallback;
 	void* arg;
 	void* next;
-#endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
+#endif // !USE_REGISTERING_TIMERS_WITH_CALLBACK
 }Timerwp_t;
 
 typedef struct {
@@ -57,7 +57,7 @@ typedef struct {
 
 #ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
 extern Timerwp_t* RegisteredTimers[MAX_REGISTER_NUM];
-#endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
+#endif // !USE_REGISTERING_TIMERS_WITH_CALLBACK
 
 typedef struct {
 	uint32_t lastTimeFix;
