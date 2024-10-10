@@ -36,8 +36,8 @@
 #include "SimpleTimerWP.h"  //WP means "WITH POINTER". 
 /*you can set to it pointer the address of your project TickValue getting function.
 For example: -->
-Timerwp_t MyTimer1;
-Timerwp_t MyTimer2;
+Timert_t MyTimer1;
+Timert_t MyTimer2;
 stopwatchwp_t microsecondT;
 MyTimer1.ptrToTick = (tickptr_fn*)GetTickCount;
 MyTimer2.ptrToTick = (tickptr_fn*)HAL_GetTick;
@@ -55,11 +55,37 @@ or just:
 InitStopWatchWP(&microsecondT, (tickptr_fn*)usTick);
 InitTimerWP(&MyTimer1, (tickptr_fn*)HAL_GetTick); //for MyTimer1 use the HAL_GetTick() fucntion;
 */
-#ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
-/*static*/ Timerwp_t* RegisteredTimers[MAX_REGISTER_NUM];
-static uint8_t NRegister = 0;
-#endif
 
+#ifdef MINIMAL_CODESIZE
+uint32_t someExternalTick = 0;
+#endif // !MINIMAL_CODESIZE
+
+
+#if defined(USE_REGISTERING_TIMERS_WITH_CALLBACK) && !defined(MINIMAL_CODESIZE)
+/*static*/ Timert_t* RegisteredTimers[MAX_REGISTER_NUM];
+static uint8_t NRegister = 0;
+#endif // !USE_REGISTERING_TIMERS_WITH_CALLBACK && !MINIMAL_CODESIZE
+
+void InitTimerWP(Timert_t* Timer, tickptr_fn* SpecifyTickFunction)
+{
+	memset(Timer, 0, sizeof(Timert_t));
+#ifndef MINIMAL_CODESIZE
+	Timer->ptrToTick = SpecifyTickFunction;
+#else
+	tickptr_fn;
+#endif // !MINIMAL_CODESIZE
+}
+
+void InitTimerGroup(Timert_t* ArrTimers, tickptr_fn* SpecifyTickFunction, uint8_t qntyTimers, uint32_t setVals)
+{
+	for (uint8_t u = 0; u < qntyTimers; u++)
+	{
+		InitTimerWP(&ArrTimers[u], SpecifyTickFunction);
+		ArrTimers[u].setVal = setVals;
+	}
+}
+
+#ifndef MINIMAL_CODESIZE
 void InitStopWatchWP(stopwatchwp_t* timeMeasure, tickptr_fn* SpecifyTickFunction)
 {
 	memset(timeMeasure, 0, sizeof(stopwatchwp_t));
@@ -72,12 +98,6 @@ void InitStopWatchGroup(stopwatchwp_t *stopwatchArr, tickptr_fn* SpecifyTickFunc
 	for (u = 0; u < qnty; u++) {
 		InitStopWatchWP(&stopwatchArr[u], SpecifyTickFunction);
 	}
-}
-
-void InitTimerWP(Timerwp_t* Timer, tickptr_fn* SpecifyTickFunction)
-{
-	memset(Timer, 0, sizeof(Timerwp_t));
-	Timer->ptrToTick = SpecifyTickFunction;
 }
 
 //StopWatchPointToPointStart(&watch);
@@ -116,21 +136,29 @@ uint32_t CyclicStopWatchWP(stopwatchwp_t* timeMeasure, uint16_t Ncycle)
 	}
 	return 0;
 }
+#endif // !MINIMAL_CODESIZE
 
 /*This is just simple timer without interrupt callback handler and it works without interrupt.
 Just use IsTimerWPRinging() request. But before you have to set the .ptrToTick to the tick function reference.
 To do it call the InitTimerWP(&MyTimer, (tickptr_fn *)xTickGetCountForExample);
 put:
 time - the value that after reaching it IsTimerWPRinging(&MyTimer) gets true*/
-void LaunchTimerWP(uint32_t time, Timerwp_t* Timer)
+void LaunchTimerWP(uint32_t time, Timert_t* Timer)
 {
 	if (Timer != NULL) {
+#ifndef MINIMAL_CODESIZE
 		if (Timer->ptrToTick == NULL)
 			return;
+#endif // !MINIMAL_CODESIZE
 		if (Timer->Start == 0)
 		{
 			Timer->setVal = time;
+#ifdef MINIMAL_CODESIZE
+			Timer->launchedTime = someExternalTick;
+#else
 			Timer->launchedTime = (uint32_t)(Timer->ptrToTick());
+#endif // !MINIMAL_CODESIZE
+
 		}
 		Timer->Start = 1;
 	}
@@ -152,7 +180,7 @@ void LaunchTimerByRef(uint32_t time, SimpleTimer_t* Timer, uint32_t asRef)
 	return;
 }
 
-void StopTimerWP(Timerwp_t* Timer)
+void StopTimerWP(Timert_t* Timer)
 {
 	if (Timer != NULL) {
 		//if (Timer->ptrToTick == NULL)
@@ -166,20 +194,11 @@ void StopTimerWP(Timerwp_t* Timer)
 
 void StopSimpleTimer(SimpleTimer_t* Timer)
 {
-	StopTimerWP((Timerwp_t*)Timer); //?
+	StopTimerWP((Timert_t*)Timer); //?
 	return;
 }
 
-void InitTimerGroup(Timerwp_t* ArrTimers, tickptr_fn* SpecifyTickFunction, uint8_t qntyTimers, uint32_t setVals)
-{
-	for (uint8_t u = 0; u < qntyTimers; u++)
-	{
-		InitTimerWP(&ArrTimers[u], SpecifyTickFunction);
-		ArrTimers[u].setVal = setVals;
-	}
-}
-
-void StopTimerGroup(Timerwp_t* ArrTimers, uint8_t qntyTimers)
+void StopTimerGroup(Timert_t* ArrTimers, uint8_t qntyTimers)
 {
 	for (uint8_t u = 0; u < qntyTimers; u++)
 	{
@@ -187,7 +206,7 @@ void StopTimerGroup(Timerwp_t* ArrTimers, uint8_t qntyTimers)
 	}
 }
 
-uint8_t RestartTimerGroup(Timerwp_t* ArrTimers, uint8_t qntyTimers)
+uint8_t RestartTimerGroup(Timert_t* ArrTimers, uint8_t qntyTimers)
 {
 	uint8_t res = 0;
 	for (uint8_t u = 0; u < qntyTimers; u++)
@@ -198,21 +217,29 @@ uint8_t RestartTimerGroup(Timerwp_t* ArrTimers, uint8_t qntyTimers)
 	return res;
 }
 
-uint8_t IsTimerWPStarted(Timerwp_t* Timer) {
+uint8_t IsTimerWPStarted(Timert_t* Timer) {
 	if (Timer != NULL) {
+#ifndef MINIMAL_CODESIZE
 		if (Timer->ptrToTick == NULL)
 			return 0;
+#endif // !MINIMAL_CODESIZE
 		return Timer->Start;
 	}
 	return 0;
 }
 
-uint8_t IsTimerWPRinging(Timerwp_t* Timer) {
+uint8_t IsTimerWPRinging(Timert_t* Timer) {
 	if (Timer != NULL) {
+#ifndef MINIMAL_CODESIZE
 		if (Timer->ptrToTick == NULL)
 			return 0;
+#endif // !MINIMAL_CODESIZE
 		if (Timer->Start) {
+#ifdef MINIMAL_CODESIZE
+			uint32_t tickTime = someExternalTick;
+#else
 			uint32_t tickTime = (uint32_t)(Timer->ptrToTick());
+#endif // !MINIMAL_CODESIZE
 			if ((tickTime - Timer->launchedTime) >= Timer->setVal)
 				return 1; //yes, timer is ringing!
 		}
@@ -232,13 +259,21 @@ uint8_t IsTimerRingingKnowByRef(SimpleTimer_t *Timer, uint32_t asRef)
 	return 0; //nope!
 }
 
-uint8_t RestartTimerWP(Timerwp_t* Timer)
+uint8_t RestartTimerWP(Timert_t* Timer)
 {
-	if ((Timer->ptrToTick == NULL) || (Timer == NULL))
+	if (
+#ifndef MINIMAL_CODESIZE
+		(Timer->ptrToTick == NULL) ||
+#endif // !MINIMAL_CODESIZE
+		(Timer == NULL))
 		return 255;
 	if (Timer->setVal < 0)
 		return 254;
+#ifndef MINIMAL_CODESIZE
 	Timer->launchedTime = (uint32_t)(Timer->ptrToTick());
+#else
+	Timer->launchedTime = someExternalTick;
+#endif // !MINIMAL_CODESIZE
 	Timer->Start = 1;
 	return 0;
 }
@@ -254,8 +289,8 @@ uint8_t RestartTimerByRef(SimpleTimer_t* Timer, uint32_t asRef)
 	return 0;
 }
 
-#ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
-uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, timerType_enum timType, tickptr_fn *SpecifyTickFunc)
+#if defined(USE_REGISTERING_TIMERS_WITH_CALLBACK) && !defined(MINIMAL_CODESIZE)
+uint8_t RegisterTimerCallback(Timert_t* Timer, timerwpcallback_fn* ThisTimerCallback, timerType_enum timType, tickptr_fn *SpecifyTickFunc)
 {
 	if (NRegister) {
 		if (NRegister > MAX_REGISTER_NUM-1)
@@ -264,7 +299,7 @@ uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCal
 			if ((Timer == RegisteredTimers[k]))
 				return 242; //This timer already registered!
 		}		
-		Timer->next = (Timerwp_t *)RegisteredTimers[NRegister - 1];
+		Timer->next = (Timert_t *)RegisteredTimers[NRegister - 1];
 	}
 	Timer->RegisteredCallback = ThisTimerCallback;
 	RegisteredTimers[NRegister] = Timer;
@@ -277,7 +312,7 @@ uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCal
 }
 
 //state: Tested!
-uint8_t UnRegisterTimerCallback(Timerwp_t* Timer)
+uint8_t UnRegisterTimerCallback(Timert_t* Timer)
 {
 	uint8_t k = 0;
 	for (uint8_t i = 0; i < NRegister; i++) {
@@ -309,12 +344,12 @@ uint8_t UnRegisterTimerCallback(Timerwp_t* Timer)
 	return 0;
 }
 
-uint8_t RegisteredTimersCallbackHandle(Timerwp_t* Timer)
+uint8_t RegisteredTimersCallbackHandle(Timert_t* Timer)
 {
 	if (Timer != NULL) {
 		if (Timer->RegisteredCallback != NULL)
 		{
-			for (Timerwp_t* timPtr = Timer; timPtr != NULL; timPtr = timPtr->next) {
+			for (Timert_t* timPtr = Timer; timPtr != NULL; timPtr = timPtr->next) {
 				if (IsTimerWPRinging(timPtr)) {
 					timPtr->RegisteredCallback(timPtr->arg);
 					if (timPtr->TimType == PERIODIC_TIMER)
@@ -337,7 +372,7 @@ uint8_t getRegisterTimersMaxIndex(void)
 	}
 	return 0; //255 bad res! //maybe it has sense to return 0 even when error; cause the protections on functions already prepared! (If don't to do it that mayb very dangerous code while using RegisteredTimersCallbackHandle(RegisteredTimers[255])!)
 }
-#endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
+#endif // !USE_REGISTERING_TIMERS_WITH_CALLBACK && !MINIMAL_CODESIZE
 
 #ifdef USING_RTOS
 #ifndef taskYIELD
@@ -346,7 +381,7 @@ uint8_t getRegisterTimersMaxIndex(void)
 #define taskYIELD()
 #endif // DEBUG_ON_VS
 #endif // !taskYIELD
-void TaskYieldWithinSpecifiedTime(const uint32_t time, Timerwp_t* Timer)
+void TaskYieldWithinSpecifiedTime(const uint32_t time, Timert_t* Timer)
 {
 	LaunchTimerWP(time, Timer);
 	while (!IsTimerWPRinging(Timer))
