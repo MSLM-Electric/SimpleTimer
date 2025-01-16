@@ -44,12 +44,12 @@ void InitTimersRegistration(void)
 	Test15s.ptrToTick = (tickptr_fn*)GetTickCount;
 	InitTimerGroup(SomeProcess.Timers, (tickptr_fn*)GetTickCount, sizeof(SomeProcess.Timers) / sizeof(Timert_t), (U32_ms)1000);
 #endif // !MINIMAL_CODESIZE
-	LaunchTimerWP(1000, &Timer1s);
-	LaunchTimerWP(2000, &Timer2s);
-	LaunchTimerWP(3000, &Timer3s);
-	LaunchTimerWP(5000, &Timer5sOneS);
+	LaunchTimerWP(1000 x1ms, &Timer1s);
+	LaunchTimerWP(2000 x1ms, &Timer2s);
+	LaunchTimerWP(3000 x1ms, &Timer3s);
+	LaunchTimerWP(5000 x1ms, &Timer5sOneS);
 	LaunchTimerWP((U32_ms)10000, &Timer10sOne);
-	LaunchTimerWP(15000, &Timer15s);
+	LaunchTimerWP(15000 x1ms, &Timer15s);
 	return;
 }
 
@@ -168,7 +168,9 @@ static uint32_t myTick = 0;
 static void simulateTick(void)
 {
 	myTick++;
+#ifdef MINIMAL_CODESIZE
 	someExternalTick++;
+#endif // !MINIMAL_CODESIZE
 	return;
 	/*As example use this func as a reference tick to your specific timer:*/
 	/*

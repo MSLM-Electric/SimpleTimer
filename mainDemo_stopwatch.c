@@ -12,7 +12,7 @@ static void Process2(void);
 static void Process3(void);
 
 stopwatchwp_t Process1Time = { 0 }, cyclicMeasure = { 0 }, testCyclicMeasure = { 0 }, Process2Time = { 0 };
-Timerwp_t MyTimer = { 0 };
+Timert_t MyTimer = {0};
 uint32_t AccumulateVar = 0;
 uint8_t catchPoint = 0;
 uint32_t justTestVar = 0;

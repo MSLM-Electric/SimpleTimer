@@ -57,7 +57,7 @@ InitTimerWP(&MyTimer1, (tickptr_fn*)HAL_GetTick); //for MyTimer1 use the HAL_Get
 */
 
 #ifdef MINIMAL_CODESIZE
-TimerBaseType someExternalTick = 0;
+uint32_t someExternalTick = 0;
 #endif // !MINIMAL_CODESIZE
 
 
@@ -76,7 +76,7 @@ void InitTimerWP(Timert_t* Timer, tickptr_fn* SpecifyTickFunction)
 #endif // !MINIMAL_CODESIZE
 }
 
-void InitTimerGroup(Timert_t* ArrTimers, tickptr_fn* SpecifyTickFunction, uint8_t qntyTimers, TimerBaseType setVals)
+void InitTimerGroup(Timert_t* ArrTimers, tickptr_fn* SpecifyTickFunction, uint8_t qntyTimers, uint32_t setVals)
 {
 	for (uint8_t u = 0; u < qntyTimers; u++)
 	{
@@ -143,7 +143,7 @@ Just use IsTimerWPRinging() request. But before you have to set the .ptrToTick t
 To do it call the InitTimerWP(&MyTimer, (tickptr_fn *)xTickGetCountForExample);
 put:
 time - the value that after reaching it IsTimerWPRinging(&MyTimer) gets true*/
-void LaunchTimerWP(TimerBaseType time, Timert_t* Timer)
+void LaunchTimerWP(uint32_t time, Timert_t* Timer)
 {
 	if (Timer != NULL) {
 #ifndef MINIMAL_CODESIZE
@@ -156,7 +156,7 @@ void LaunchTimerWP(TimerBaseType time, Timert_t* Timer)
 #ifdef MINIMAL_CODESIZE
 			Timer->launchedTime = someExternalTick;
 #else
-			Timer->launchedTime = (TimerBaseType)(Timer->ptrToTick());
+			Timer->launchedTime = (uint32_t)(Timer->ptrToTick());
 #endif // !MINIMAL_CODESIZE
 
 		}
@@ -165,7 +165,7 @@ void LaunchTimerWP(TimerBaseType time, Timert_t* Timer)
 	return;
 }
 
-void LaunchTimerByRef(TimerBaseType time, SimpleTimer_t* Timer, TimerBaseType asRef)
+void LaunchTimerByRef(uint32_t time, SimpleTimer_t* Timer, uint32_t asRef)
 {
 	if (Timer != NULL) {
 		if (asRef == 0)
@@ -173,7 +173,7 @@ void LaunchTimerByRef(TimerBaseType time, SimpleTimer_t* Timer, TimerBaseType as
 		if (Timer->Start == 0)
 		{
 			Timer->setVal = time;
-			Timer->launchedTime = (TimerBaseType)(asRef);
+			Timer->launchedTime = (uint32_t)(asRef);
 		}
 		Timer->Start = 1;
 	}
@@ -236,9 +236,9 @@ uint8_t IsTimerWPRinging(Timert_t* Timer) {
 #endif // !MINIMAL_CODESIZE
 		if (Timer->Start) {
 #ifdef MINIMAL_CODESIZE
-			TimerBaseType tickTime = someExternalTick;
+			uint32_t tickTime = someExternalTick;
 #else
-			TimerBaseType tickTime = (TimerBaseType)(Timer->ptrToTick());
+			uint32_t tickTime = (uint32_t)(Timer->ptrToTick());
 #endif // !MINIMAL_CODESIZE
 			if ((tickTime - Timer->launchedTime) >= Timer->setVal)
 				return 1; //yes, timer is ringing!
@@ -247,7 +247,7 @@ uint8_t IsTimerWPRinging(Timert_t* Timer) {
 	return 0; //nope!
 }
 
-uint8_t IsTimerRingingKnowByRef(SimpleTimer_t *Timer, TimerBaseType asRef)
+uint8_t IsTimerRingingKnowByRef(SimpleTimer_t *Timer, uint32_t asRef)
 {
 	if (Timer != NULL) {
 		if (Timer->Start) {
@@ -270,7 +270,7 @@ uint8_t RestartTimerWP(Timert_t* Timer)
 	if (Timer->setVal < 0)
 		return 254;
 #ifndef MINIMAL_CODESIZE
-	Timer->launchedTime = (TimerBaseType)(Timer->ptrToTick());
+	Timer->launchedTime = (uint32_t)(Timer->ptrToTick());
 #else
 	Timer->launchedTime = someExternalTick;
 #endif // !MINIMAL_CODESIZE
@@ -278,13 +278,13 @@ uint8_t RestartTimerWP(Timert_t* Timer)
 	return 0;
 }
 
-uint8_t RestartTimerByRef(SimpleTimer_t* Timer, TimerBaseType asRef)
+uint8_t RestartTimerByRef(SimpleTimer_t* Timer, uint32_t asRef)
 {
 	if (Timer == NULL)
 		return 255;
 	if (Timer->setVal < 0)
 		return 254;
-	Timer->launchedTime = (TimerBaseType)(asRef);
+	Timer->launchedTime = (uint32_t)(asRef);
 	Timer->Start = 1;
 	return 0;
 }
@@ -392,7 +392,7 @@ void TaskYieldWithinSpecifiedTime(const uint32_t time, Timert_t* Timer)
 }
 #endif // USING_RTOS
 
-void catchBreakPoint(TimerBaseType* var)
+void catchBreakPoint(uint32_t* var)
 {
 	*var = *var + 1;
 	*var = *var - 1;
