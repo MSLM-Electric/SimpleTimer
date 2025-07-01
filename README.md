@@ -9,3 +9,5 @@ You can launch the console app to see what happens on this example application. 
 Completed.
 
 Arduino compatible lib located on OldVersion/SimpleTimer.cpp
+
+Add Unit/ComplexTest! Critical bug founded! Get UnitTest example from VCO driver project.

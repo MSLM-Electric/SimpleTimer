@@ -240,7 +240,7 @@ uint8_t IsTimerWPRinging(Timert_t* Timer) {
 #else
 			TimerBaseType tickTime = (TimerBaseType)(Timer->ptrToTick());
 #endif // !MINIMAL_CODESIZE
-			if ((tickTime - Timer->launchedTime) >= Timer->setVal)
+			if ((TimerBaseType)(tickTime - Timer->launchedTime) >= Timer->setVal)
 				return 1; //yes, timer is ringing!
 		}
 	}
@@ -252,7 +252,7 @@ uint8_t IsTimerRingingKnowByRef(SimpleTimer_t *Timer, TimerBaseType asRef)
 	if (Timer != NULL) {
 		if (Timer->Start) {
 			/*tickTime = asRef;*/
-			if ((asRef - Timer->launchedTime) >= Timer->setVal)
+			if ((TimerBaseType)(asRef - Timer->launchedTime) >= Timer->setVal)
 				return 1; //yes, timer is ringing!
 		}
 	}

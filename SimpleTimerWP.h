@@ -1,5 +1,5 @@
 #ifndef __SIMPLETIMERWP_H_
-#define __SIMPLETIMERWP_H_  //Protection from the headers are getting included multiple time
+#define __SIMPLETIMERWP_H_
 #ifdef __cplusplus
 extern "C" {
 #endif // !_cplusplus
@@ -28,10 +28,16 @@ extern "C" {
 typedef uint32_t U32_ms;
 typedef uint32_t U32_us;
 
-
+#ifndef TIMER_TICK_16BIT_EN
 #define TIMER_TICK_16BIT_EN 0
+#endif // !TIMER_TICK_16BIT_EN
+#ifndef TIMER_TICK_32BIT_EN
 #define TIMER_TICK_32BIT_EN 1
+#endif // !TIMER_TICK_32BIT_EN
+#ifndef TIMER_TICK_8BIT_EN
 #define TIMER_TICK_8BIT_EN 0 //!not implemented yet
+#endif // !TIMER_TICK_8BIT_EN
+
 
 #if TIMER_TICK_16BIT_EN
 typedef uint16_t TimerBaseType;
@@ -131,4 +137,4 @@ void TaskYieldWithinSpecifiedTime(const uint32_t time, Timert_t* Timer);
 }
 #endif // !_cplusplus
 
-#endif // !__SIMPLETIMER_H_
+#endif // !__SIMPLETIMERWP_H_
