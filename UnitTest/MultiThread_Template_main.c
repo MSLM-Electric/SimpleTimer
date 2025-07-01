@@ -152,6 +152,9 @@ DWORD WINAPI ThreadNo2(LPVOID lpParam)
 Timert_t Timer1s;
 Timert_t Timer10ms;
 
+#include "EqualCheck.h"
+stopwatchwp_t test1s;
+
 DWORD WINAPI TickThread(LPVOID lpParam)
 {
 	int res = ThreadInit(lpParam);
@@ -160,7 +163,8 @@ DWORD WINAPI TickThread(LPVOID lpParam)
 	TimerBaseType TickVal = (TimerBaseType)GetTickCount();
 	LaunchTimerByRef(10 x1ms, &Timer10ms, TickVal);
 	LaunchTimerByRef(1000 x1ms, &Timer1s, TickVal);
-	//InitStopWatch();
+	InitStopWatchWP(&test1s, (tickptr_fn*)GetTickCount);
+	StopWatchWP(&test1s);
 	while (1)
 	{
 		TimerBaseType TickToRef = (TimerBaseType)GetTickCount();
@@ -169,6 +173,8 @@ DWORD WINAPI TickThread(LPVOID lpParam)
 			RestartTimerByRef(&Timer10ms, TickToRef);
 			if (IsTimerRingingKnowByRef(&Timer1s, TickToRef)) {
 				RestartTimerByRef(&Timer1s, TickToRef);
+				StopWatchWP(&test1s);
+				debug_assert("Testing 1s is bad!\n", IsValuesEqual2(test1s.measuredTime, 997 x1ms, 1006 x1ms), FALSE);
 				DEBUG_PRINTF(1, ("Tick Val = %u\n", TickToRef));
 				if (ledstate) {
 					DEBUG_PRINTF(1, ("Ledstate: OFF\n"));

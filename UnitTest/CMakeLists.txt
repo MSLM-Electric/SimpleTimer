@@ -16,7 +16,7 @@ set(SOURCES
 	${ROOT_PATH}/ConsoleMenuOptions.c
 	${EXTERNAL_LIBS}/SimpleTimerWP.c
 	${ROOT_PATH}/MultiThreadSupport.c
-	#${ROOT_PATH}/CmdsScenarioScripts.c
+	${ROOT_PATH}/EqualCheck.c
 	${ROOT_PATH}/MultiThread_Template_main.c
 )
 
@@ -27,7 +27,7 @@ set(HEADERS
 	${ROOT_PATH}/type_def.h
 	${EXTERNAL_LIBS}/SimpleTimerWP.h
 	${ROOT_PATH}/MultiThreadSupport.h
-	#${ROOT_PATH}/CmdsScenarioScripts.h
+	${ROOT_PATH}/EqualCheck.h
 	#${EXTERNAL_LIBS}/ComplexTest/vssimulation_port.h
 
 )
