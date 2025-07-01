@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 set(PROJ_NAME SimpleTimer)
 project(${PROJ_NAME} C)
-set(VERSION_GENERATOR_ENABLE 0)
+set(VERSION_GENERATOR_ENABLE 1)
 if(${VERSION_GENERATOR_ENABLE} EQUAL 1)
 #=======================================================================================
+    message(STATUS "Version generator enabled!")
     include_directories(${CMAKE_BINARY_DIR}/../version_generator)
     set(VERSION_GENERATOR_PATH ${CMAKE_SOURCE_DIR}/version_generator)
     add_executable(${PROJ_NAME}_versiontestexecutable ${VERSION_GENERATOR_PATH}/runversiontest.c ${VERSION_GENERATOR_PATH}/funcGetVersion.c ${VERSION_GENERATOR_PATH}/funcGetVersion.h)
