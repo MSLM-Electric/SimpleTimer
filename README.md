@@ -4,8 +4,15 @@ Not RTOS required. Just config some timers of any microcontroller to ticking as 
 If you don't want use the Timers interrupt then just configurate the timer as counter. 
 
 You can launch the console app to see what happens on this example application. To do it: go to the folder "DemoAppl/" and open "TimerWithCBdemo.exe" Download this demo "*.exe" by clicking "Download raw file" and run it.
-
-!!! PROJECT'S STATUS !!!
+~~~
+PROJECT'S STATUS:
 Completed.
-
+~~~
 Arduino compatible lib located on OldVersion/SimpleTimer.cpp
+
+How To:
+-------
+
+Just include to your project two files: *`SimpleTimerWP.c`* and *`SimpleTimerWP.h`*.
+
+For using on Arduino get: *`SimpleTimerWP.cpp`* and `SimpleTimerWP.h` files.
