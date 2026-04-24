@@ -168,8 +168,8 @@ void LaunchTimerWP(TimerBaseType time, Timert_t* Timer)
 void LaunchTimerByRef(TimerBaseType time, SimpleTimer_t* Timer, TimerBaseType asRef)
 {
 	if (Timer != NULL) {
-		if (asRef == 0)
-			return;
+		//if (asRef == 0)
+			//return;
 		if (Timer->Start == 0)
 		{
 			Timer->setVal = time;

@@ -1,5 +1,5 @@
 #include "MultiThreadSupport.h"
-#include "../type_def.h"
+#include "type_def.h"
 
 int ThreadCreation(ThreadNamePtr_fn* ThreadName, ThreadsStruct_t *ThreadStruct, int Data_Of_Thread)
 {

@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS  //!!! to allow unsafe and oldest code styles
 
 #include "../MultiThreadSupport.h"
-#include "../SimpleTimerWP.h"
+#include "../../SimpleTimerWP.h"
 #include "../ConsoleMenuOptions.h"
 
 #define false 0
@@ -152,7 +152,7 @@ DWORD WINAPI ThreadNo2(LPVOID lpParam)
 Timert_t Timer1s;
 Timert_t Timer10ms;
 
-#include "EqualCheck.h"
+#include "../EqualCheck.h"
 stopwatchwp_t test1s;
 
 DWORD WINAPI TickThread(LPVOID lpParam)
