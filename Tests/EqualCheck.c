@@ -72,3 +72,55 @@ ComparerFlags_t IsValuesEqual2(u32 Value, u32 lowerValueToCompare, u32 higherVal
 		return EQUAL;
 	return 0;
 }
+
+ComparerFlags_t IsValueBigger(u32 Value, u32 comparerValue, u32 delta)
+{
+    return BAD_RESULT;
+}
+
+
+ComparerFlags_t FloatValuesComparer3(float Value, float comparerValue, float delta)
+{
+    if (Value <= (comparerValue + delta)) {
+        if (Value >= (comparerValue - delta)) {
+            return EQUAL;
+        }
+        else if (Value < (comparerValue - delta)) {
+            return SMALLER;
+        }
+    }
+    else {
+        return BIGGER;
+    }
+    return BAD_RESULT; //never should get here!
+}
+
+ComparerFlags_t FloatValuesComparer2(float Value, float lowerValueToCompare, float higherValueToCompare)
+{
+    if (Value <= (higherValueToCompare)) {
+        if (Value >= (lowerValueToCompare)) {
+            return EQUAL;
+        }
+        else if (Value < (lowerValueToCompare)) {
+            return SMALLER;
+        }
+    }
+    else {
+        return BIGGER;
+    }
+    return BAD_RESULT; //never should get here!
+}
+
+ComparerFlags_t IsFloatValuesEqual(float Value, float comparerValue, float delta)
+{
+    if (FloatValuesComparer3(Value, comparerValue, delta) == EQUAL)
+        return EQUAL;
+    return 0;
+}
+
+ComparerFlags_t IsFloatValuesEqual2(float Value, float lowerValueToCompare, float higherValueToCompare)
+{
+    if (FloatValuesComparer2(Value, lowerValueToCompare, higherValueToCompare) == EQUAL)
+        return EQUAL;
+    return 0;
+}
